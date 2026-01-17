@@ -1,0 +1,1503 @@
+!DOCTYPE html
+html lang=zh-TW
+head
+    meta charset=UTF-8
+    meta name=viewport content=width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no
+    title生詞特訓班 - 學華語向前走 第二冊title
+    
+    !-- Tailwind CSS --
+    script src=httpscdn.tailwindcss.comscript
+    
+    !-- React & ReactDOM --
+    script crossorigin src=httpsunpkg.comreact@18umdreact.production.min.jsscript
+    script crossorigin src=httpsunpkg.comreact-dom@18umdreact-dom.production.min.jsscript
+    
+    !-- Babel for JSX --
+    script src=httpsunpkg.com@babelstandalonebabel.min.jsscript
+    
+    style
+         強制設定高度，避免容器塌陷導致看不到字 
+        html, body, #root {
+            height 100%;
+            width 100%;
+            margin 0;
+            padding 0;
+            overflow hidden;
+        }
+
+         自定義動畫樣式 
+        @keyframes shake {
+          0%, 100% { transform translateX(0); }
+          25% { transform translateX(-5px); }
+          75% { transform translateX(5px); }
+        }
+        .animate-shake {
+          animation shake 0.3s cubic-bezier(.36,.07,.19,.97) both;
+        }
+        @keyframes fade-in-up {
+          from { opacity 0; transform translateY(20px); }
+          to { opacity 1; transform translateY(0); }
+        }
+        .animate-fade-in-up {
+          animation fade-in-up 0.4s ease-out forwards;
+        }
+        
+         禁止選取文字，避免遊戲中誤觸 
+        body {
+            user-select none;
+            -webkit-user-select none;
+            overscroll-behavior none;
+        }
+    style
+head
+body class=bg-sky-900 text-white font-sans
+    div id=rootdiv
+
+    script type=textbabel
+        const { useState, useEffect, useRef, useCallback } = React;
+
+         --- 內建圖標組件 ---
+        const Icon = ({ children, size = 24, className = , ...props }) = (
+            svg 
+                xmlns=httpwww.w3.org2000svg 
+                width={size} 
+                height={size} 
+                viewBox=0 0 24 24 
+                fill=none 
+                stroke=currentColor 
+                strokeWidth=2 
+                strokeLinecap=round 
+                strokeLinejoin=round 
+                className={className} 
+                {...props}
+            
+                {children}
+            svg
+        );
+
+        const Play = (props) = Icon {...props}polygon points=5 3 19 12 5 21 5 3 Icon;
+        const Pause = (props) = Icon {...props}rect x=6 y=4 width=4 height=16 rect x=14 y=4 width=4 height=16 Icon;
+        const PlayCircle = (props) = Icon {...props}circle cx=12 cy=12 r=10 polygon points=10 8 16 12 10 16 10 8 Icon;
+        const RotateCcw = (props) = Icon {...props}path d=M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8 path d=M3 3v5h5 Icon;
+        const Heart = (props) = Icon {...props}path d=M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z Icon;
+        const Star = (props) = Icon {...props}polygon points=12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2 Icon;
+        const Target = (props) = Icon {...props}circle cx=12 cy=12 r=10 circle cx=12 cy=12 r=6 circle cx=12 cy=12 r=2 Icon;
+        const Volume2 = (props) = Icon {...props}polygon points=11 5 6 9 2 9 2 15 6 15 11 19 11 5 path d=M15.54 8.46a5 5 0 0 1 0 7.07 path d=M19.07 4.93a10 10 0 0 1 0 14.14 Icon;
+        const Grid = (props) = Icon {...props}rect x=3 y=3 width=7 height=7 rect x=14 y=3 width=7 height=7 rect x=14 y=14 width=7 height=7 rect x=3 y=14 width=7 height=7 Icon;
+        const Trophy = (props) = Icon {...props}path d=M6 9H4.5a2.5 2.5 0 0 1 0-5H6 path d=M18 9h1.5a2.5 2.5 0 0 0 0-5H18 path d=M4 22h16 path d=M10 14.66V17 path d=M14 14.66V17 path d=M12 17v5 path d=m18 2-3.4 9h-5.2L6 2Z Icon;
+        const Home = (props) = Icon {...props}path d=m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z polyline points=9 22 9 12 15 12 15 22 Icon;
+        const ArrowLeft = (props) = Icon {...props}line x1=19 y1=12 x2=5 y2=12 polyline points=12 19 5 12 12 5 Icon;
+        const Edit3 = (props) = Icon {...props}path d=M12 20h9 path d=M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z Icon;
+        const Info = (props) = Icon {...props}circle cx=12 cy=12 r=10 path d=M12 16v-4 path d=M12 8h.01 Icon;
+        const FastForward = (props) = Icon {...props}polygon points=13 19 22 12 13 5 13 19 polygon points=2 19 11 12 2 5 2 19 Icon;
+        const CheckCircle = (props) = Icon {...props}path d=M22 11.08V12a10 10 0 1 1-5.93-9.14 polyline points=22 4 12 14.01 9 11.01 Icon;
+        const AlertCircle = (props) = Icon {...props}circle cx=12 cy=12 r=10 line x1=12 y1=8 x2=12 y2=12 line x1=12 y1=16 x2=12.01 y2=16 Icon;
+        const Zap = (props) = Icon {...props}polygon points=13 2 3 14 12 14 11 22 21 10 12 10 13 2 Icon;
+        const Gift = (props) = Icon {...props}polyline points=20 12 20 22 4 22 4 12 rect x=2 y=7 width=20 height=5 line x1=12 y1=22 x2=12 y2=7 path d=M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z path d=M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z Icon;
+        const Share2 = (props) = Icon {...props}circle cx=18 cy=5 r=3 circle cx=6 cy=12 r=3 circle cx=18 cy=19 r=3 line x1=8.59 y1=13.51 x2=15.42 y2=17.49 line x1=15.41 y1=6.51 x2=8.59 y2=10.49 Icon;
+        const Copy = (props) = Icon {...props}rect x=9 y=9 width=13 height=13 rx=2 ry=2 path d=M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1 Icon;
+
+         --- 預設遊戲資料：分課生詞庫 ---
+        const DEFAULT_LESSON_DATA = {
+          1 {
+            title 第一課：新同學,
+            words [
+              { id 1-1, chinese 比較, pinyin bǐ jiào, zhuin ㄅㄧˇ ㄐㄧㄠˋ },
+              { id 1-2, chinese 大家, pinyin dà jiā, zhuin ㄉㄚˋ ㄐㄧㄚ },
+              { id 1-3, chinese 方友朋, pinyin Fāng Yǒu péng, zhuin ㄈㄤ ㄧㄡˇ ㄆㄥˊ },
+              { id 1-4, chinese 高興, pinyin gāo xìng, zhuin ㄍㄠ ㄒㄧㄥˋ },
+              { id 1-5, chinese 跟, pinyin gēn, zhuin ㄍㄣ },
+              { id 1-6, chinese 歡迎, pinyin huān yíng, zhuin ㄏㄨㄢ ㄧㄥˊ },
+              { id 1-7, chinese 今年, pinyin jīn nián, zhuin ㄐㄧㄣ ㄋㄧㄢˊ },
+              { id 1-8, chinese 介紹, pinyin jiè shào, zhuin ㄐㄧㄝˋ ㄕㄠˋ },
+              { id 1-9, chinese 自己, pinyin zì jǐ, zhuin ㄗˋ ㄐㄧˇ },
+              { id 1-10, chinese 看書, pinyin kàn shū, zhuin ㄎㄢˋ ㄕㄨ },
+              { id 1-11, chinese 認識, pinyin rèn shì, zhuin ㄖㄣˋ ㄕˋ },
+              { id 1-12, chinese 現在, pinyin xiàn zài, zhuin ㄒㄧㄢˋ ㄗㄞˋ },
+              { id 1-13, chinese 新, pinyin xīn, zhuin ㄒㄧㄣ },
+              { id 1-14, chinese 學, pinyin xué, zhuin ㄒㄩㄝˊ },
+              { id 1-15, chinese 游泳, pinyin yóu yǒng, zhuin ㄧㄡˊ ㄩㄥˇ },
+              { id 1-16, chinese 最, pinyin zuì, zhuin ㄗㄨㄟˋ },
+              { id 1-17, chinese 華語, pinyin huá yǔ, zhuin ㄏㄨㄚˊ ㄩˇ },
+              { id 1-18, chinese 張莉, pinyin Zhāng Lì, zhuin ㄓㄤ ㄌㄧˋ },
+            ]
+          },
+          2 {
+            title 第二課：我爸爸做生意,
+            words [
+              { id 2-1, chinese 幫, pinyin bāng, zhuin ㄅㄤ },
+              { id 2-2, chinese 電腦公司, pinyin diàn nǎo gōng sī, zhuin ㄉㄧㄢˋ ㄋㄠˇ ㄍㄨㄥ ㄙ },
+              { id 2-3, chinese 工作, pinyin gōng zuò, zhuin ㄍㄨㄥ ㄗㄨㄛˋ },
+              { id 2-4, chinese 上班, pinyin shàng bān, zhuin ㄕㄤˋ ㄅㄢ },
+              { id 2-5, chinese 外公, pinyin wài gōng, zhuin ㄨㄞˋ ㄍㄨㄥ },
+              { id 2-6, chinese 外婆, pinyin wài pó, zhuin ㄨㄞˋ ㄆㄛˊ },
+              { id 2-7, chinese 一樣, pinyin yí yàng, zhuin ㄧˊ ㄧㄤˋ },
+              { id 2-8, chinese 以前, pinyin yǐ qián, zhuin ㄧˇ ㄑㄧㄢˊ },
+              { id 2-9, chinese 以後, pinyin yǐ hòu, zhuin ㄧˇ ㄏㄡˋ },
+              { id 2-10, chinese 銀行, pinyin yín háng, zhuin ㄧㄣˊ ㄏㄤˊ },
+              { id 2-11, chinese 醫生, pinyin yī shēng, zhuin ㄧ ㄕㄥ },
+              { id 2-12, chinese 做生意, pinyin zuò shēng yì, zhuin ㄗㄨㄛˋ ㄕㄥ ㄧˋ },
+            ]
+          },
+          3 {
+            title 第三課：去超級市場,
+            words [
+              { id 3-1, chinese 冰淇淋, pinyin bīng qí lín, zhuin ㄅㄧㄥ ㄑㄧˊ ㄌㄧㄣˊ },
+              { id 3-2, chinese 超級市場, pinyin chāo jí shì chǎng, zhuin ㄔㄠ ㄐㄧˊ ㄕˋ ㄔㄤˇ },
+              { id 3-3, chinese 東西, pinyin dōng xi, zhuin ㄉㄨㄥ ㄒㄧ˙ },
+              { id 3-4, chinese 附近, pinyin fù jìn, zhuin ㄈㄨˋ ㄐㄧㄣˋ },
+              { id 3-5, chinese 可以, pinyin kě yǐ, zhuin ㄎㄜˇ ㄧˇ },
+              { id 3-6, chinese 米, pinyin mǐ, zhuin ㄇㄧˇ },
+              { id 3-7, chinese 買, pinyin mǎi, zhuin ㄇㄞˇ },
+              { id 3-8, chinese 牛肉, pinyin niú ròu, zhuin ㄋㄧㄡˊ ㄖㄡˋ },
+              { id 3-9, chinese 巧克力, pinyin qiǎo kè lì, zhuin ㄑㄧㄠˇ ㄎㄜˋ ㄌㄧˋ },
+              { id 3-10, chinese 青菜, pinyin qīng cài, zhuin ㄑㄧㄥ ㄘㄞˋ },
+              { id 3-11, chinese 糖果, pinyin táng guǒ, zhuin ㄊㄤˊ ㄍㄨㄛˇ },
+              { id 3-12, chinese 要, pinyin yào, zhuin ㄧㄠˋ },
+              { id 3-13, chinese 魚, pinyin yú, zhuin ㄩˊ },
+            ]
+          },
+          4 {
+            title 第四課：我想吃漢堡,
+            words [
+              { id 4-1, chinese 出去, pinyin chū qù, zhuin ㄔㄨ ㄑㄩˋ },
+              { id 4-2, chinese 蛋炒飯, pinyin dàn chǎo fàn, zhuin ㄉㄢˋ ㄔㄠˇ ㄈㄢˋ },
+              { id 4-3, chinese 餓, pinyin è, zhuin ㄜˋ },
+              { id 4-4, chinese 漢堡, pinyin hàn ㄅㄠˇ },
+              { id 4-5, chinese 快點, pinyin kuài diǎn, zhuin ㄎㄨㄞˋ ㄉㄧㄢˇ },
+              { id 4-6, chinese 了, pinyin le, zhuin ㄌㄜ˙ },
+              { id 4-7, chinese 麵, pinyin miàn, zhuin ㄇㄧㄢˋ },
+              { id 4-8, chinese 薯條, pinyin shǔ tiáo, zhuin ㄕㄨˇ ㄊㄧㄠˊ },
+              { id 4-9, chinese 湯, pinyin tāng, zhuin ㄊㄤ },
+              { id 4-10, chinese 晚餐, pinyin wǎn cān, zhuin ㄨㄢˇ ㄘㄢ },
+              { id 4-11, chinese 晚飯, pinyin wǎn fàn, zhuin ㄨㄢˇ ㄈㄢˋ },
+              { id 4-12, chinese 先, pinyin xiān, zhuin ㄒㄧㄢ },
+              { id 4-13, chinese 已經, pinyin yǐ jīng, zhuin ㄧˇ ㄐㄧㄥ },
+              { id 4-14, chinese 玉米, pinyin yù mǐ, zhuin ㄩˋ ㄇㄧˇ },
+              { id 4-15, chinese 再, pinyin zài, zhuin ㄗㄞˋ },
+              { id 4-16, chinese 週末, pinyin zhōu mò, zhuin ㄓㄡ ㄇㄛˋ },
+            ]
+          },
+          5 {
+            title 第五課：秋天快到了,
+            words [
+              { id 5-1, chinese 變, pinyin biàn, zhuin ㄅㄧㄢˋ },
+              { id 5-2, chinese 不錯, pinyin bú cuò, zhuin ㄅㄨˊ ㄘㄨㄛˋ },
+              { id 5-3, chinese 白色, pinyin bái sè, zhuin ㄅㄞˊ ㄙㄜˋ },
+              { id 5-4, chinese 春天, pinyin chūn tiān, zhuin ㄔㄨㄣ ㄊㄧㄢ },
+              { id 5-5, chinese 草, pinyin cǎo, zhuin ㄘㄠˇ },
+              { id 5-6, chinese 紅色, pinyin hóng sè, zhuin ㄏㄨㄥˊ ㄙㄜˋ },
+              { id 5-7, chinese 黃, pinyin huáng, zhuin ㄏㄨㄤˊ },
+              { id 5-8, chinese 還是, pinyin hái shì, zhuin ㄏㄞˊ ㄕˋ },
+              { id 5-9, chinese 花, pinyin huā, zhuin ㄏㄨㄚ },
+              { id 5-10, chinese 了, pinyin le, zhuin ㄌㄜ˙ },
+              { id 5-11, chinese 綠色, pinyin lǜ sè, zhuin ㄌㄩˋ ㄙㄜˋ },
+              { id 5-12, chinese 漂亮, pinyin piào liàng, zhuin ㄆㄧㄠˋ ㄌㄧㄤˋ },
+              { id 5-13, chinese 秋天, pinyin qiū tiān, zhuin ㄑㄧㄡ ㄊㄧㄢ },
+              { id 5-14, chinese 時候, pinyin shí hòu, zhuin ㄕˊ ㄏㄡˋ },
+              { id 5-15, chinese 樹葉, pinyin shù yè, zhuin ㄕㄨˋ ㄧㄝˋ },
+              { id 5-16, chinese 天氣, pinyin tiān qì, zhuin ㄊㄧㄢ ㄑㄧˋ },
+              { id 5-17, chinese 院子, pinyin yuàn zi, zhuin ㄩㄢˋ ㄗ˙ },
+              { id 5-18, chinese 顏色, pinyin yán sè, zhuin ㄧㄢˊ ㄙㄜˋ },
+              { id 5-19, chinese 舒服, pinyin shū fú, zhuin ㄕㄨ ㄈㄨˊ },
+            ]
+          },
+          6 {
+            title 第六課：農曆新年,
+            words [
+              { id 6-1, chinese 拜年, pinyin bài nián, zhuin ㄅㄞˋ ㄋㄧㄢˊ },
+              { id 6-2, chinese 放鞭炮, pinyin fàng biān pào, zhuin ㄈㄤˋ ㄅㄧㄢ ㄆㄠˋ },
+              { id 6-3, chinese 給, pinyin gěi, zhuin ㄍㄟˇ },
+              { id 6-4, chinese 紅包, pinyin hóng bāo, zhuin ㄏㄨㄥˊ ㄅㄠ },
+              { id 6-5, chinese 會, pinyin huì, zhuin ㄏㄨㄟˋ },
+              { id 6-6, chinese 每次, pinyin měi cì, zhuin ㄇㄟˇ ㄘˋ },
+              { id 6-7, chinese 那天, pinyin nà tiān, zhuin ㄋㄚˋ ㄊㄧㄢ },
+              { id 6-8, chinese 年糕, pinyin nián gāo, zhuin ㄋㄧㄢˊ ㄍㄠ },
+              { id 6-9, chinese 如果, pinyin rú guǒ, zhuin ㄖㄨˊ ㄍㄨㄛˇ },
+              { id 6-10, chinese 說, pinyin shuō, zhuin ㄕㄨㄛ },
+              { id 6-11, chinese 臺灣, pinyin Tái wān, zhuin ㄊㄞˊ ㄨㄢ },
+              { id 6-12, chinese 貼春聯, pinyin tiē chūn lián, zhuin ㄊㄧㄝ ㄔㄨㄣ ㄌㄧㄢˊ },
+              { id 6-13, chinese 新年, pinyin xīn nián, zhuin ㄒㄧㄣ ㄋㄧㄢˊ },
+              { id 6-14, chinese 放, pinyin fàng, zhuin ㄈㄤˋ },
+              { id 6-15, chinese 星期, pinyin xīng qí, zhuin ㄒㄧㄥ ㄑㄧˊ },
+              { id 6-16, chinese 華人, pinyin Huá rén, zhuin ㄏㄨㄚˊ ㄖㄣˊ },
+              { id 6-17, chinese 農曆, pinyin nóng lì, zhuin ㄋㄨㄥˊ ㄌㄧˋ },
+            ]
+          },
+          7 {
+            title 第七課：早一點睡覺,
+            words [
+              { id 7-1, chinese 別, pinyin bié, zhuin ㄅㄧㄝˊ },
+              { id 7-2, chinese 肥皂, pinyin féi zào, zhuin ㄈㄟˊ ㄗㄠˋ },
+              { id 7-3, chinese 乾淨, pinyin gān jìng, zhuin ㄍㄢ ㄐㄧㄥˋ },
+              { id 7-4, chinese 該, pinyin gāi, zhuin ㄍㄞ },
+              { id 7-5, chinese 過, pinyin guò, zhuin ㄍㄨㄛˋ },
+              { id 7-6, chinese 趕快, pinyin gǎn kuài, zhuin ㄍㄢˇ ㄎㄨㄞˋ },
+              { id 7-7, chinese 來不及, pinyin lái bù jí, zhuin ㄌㄞˊ ㄅㄨˋ ㄐㄧˊ },
+              { id 7-8, chinese 累, pinyin lèi, zhuin ㄌㄟˋ },
+              { id 7-9, chinese 起床, pinyin qǐ chuáng, zhuin ㄑㄧˇ ㄔㄨㄤˊ },
+              { id 7-10, chinese 刷牙, pinyin shuā yá, zhuin ㄕㄨㄚ ㄧㄚˊ },
+              { id 7-11, chinese 睡覺, pinyin shuì jiào, zhuin ㄕㄨㄟˋ ㄐㄧㄠˋ },
+              { id 7-12, chinese 晚上, pinyin wǎn shàng, zhuin ㄨㄢˇ ㄕㄤˋ },
+              { id 7-13, chinese 忘, pinyin wàng, zhuin ㄨㄤˋ },
+              { id 7-14, chinese 洗, pinyin xǐ, zhuin ㄒㄧˇ },
+              { id 7-15, chinese 洗澡, pinyin xǐ zǎo, zhuin ㄒㄧˇ ㄗㄠˇ },
+              { id 7-16, chinese 洗臉, pinyin xǐ liǎn, zhuin ㄒㄧˇ ㄌㄧㄢˇ },
+              { id 7-17, chinese 用, pinyin yòng, zhuin ㄩㄥˋ },
+              { id 7-18, chinese 知道, pinyin zhī dào, zhuin ㄓ ㄉㄠˋ },
+              { id 7-19, chinese 昨天, pinyin zuó tiān, zhuin ㄗㄨㄛˊ ㄊㄧㄢ },
+            ]
+          },
+          8 {
+            title 第八課：我的寵物,
+            words [
+              { id 8-1, chinese 不見了, pinyin bú jiàn le, zhuin ㄅㄨˊ ㄐㄧㄢˋ ㄌㄜ˙ },
+              { id 8-2, chinese 寵物, pinyin chǒng wù, zhuin ㄔㄨㄥˇ ㄨˋ },
+              { id 8-3, chinese 帶, pinyin dài, zhuin ㄉㄞˋ },
+              { id 8-4, chinese 非常, pinyin fēi cháng, zhuin ㄈㄟ ㄔㄤˊ },
+              { id 8-5, chinese 過, pinyin guò, zhuin ㄍㄨㄛˋ },
+              { id 8-6, chinese 狗, pinyin gǒu, zhuin ㄍㄡˇ },
+              { id 8-7, chinese 可愛, pinyin kě ài, zhuin ㄎㄜˇ ㄞˋ },
+              { id 8-8, chinese 貓, pinyin māo, zhuin ㄇㄠ },
+              { id 8-9, chinese 去年, pinyin qù nián, zhuin ㄑㄩˋ ㄋㄧㄢˊ },
+              { id 8-10, chinese 送給, pinyin sòng gěi, zhuin ㄙㄨㄥˋ ㄍㄟˇ },
+              { id 8-11, chinese 上個月, pinyin shàng ge yuè, zhuin ㄕㄤˋ ㄍㄜ˙ ㄩㄝˋ },
+              { id 8-12, chinese 牠們, pinyin tā men, zhuin ㄊㄚ ㄇㄣ˙ },
+              { id 8-13, chinese 兔子, pinyin tù zi, zhuin ㄊㄨˋ ㄗ˙ },
+              { id 8-14, chinese 餵, pinyin wèi, zhuin ㄨㄟˋ },
+              { id 8-15, chinese 養, pinyin yǎng, zhuin ㄧㄤˇ },
+              { id 8-16, chinese 隻, pinyin zhī, zhuin ㄓ },
+              { id 8-17, chinese 散步, pinyin sàn bù, zhuin ㄙㄢˋ ㄅㄨˋ },
+            ]
+          },
+          9 {
+            title 第九課：音樂教室在北方,
+            words [
+              { id 9-1, chinese 北方, pinyin běi fāng, zhuin ㄅㄟˇ ㄈㄤ },
+              { id 9-2, chinese 還是, pinyin hái shì, zhuin ㄏㄞˊ ㄕˋ },
+              { id 9-3, chinese 東方, pinyin dōng fāng, zhuin ㄉㄨㄥ ㄈㄤ },
+              { id 9-4, chinese 方向, pinyin fāng xiàng, zhuin ㄈㄤ ㄒㄧㄤˋ },
+              { id 9-5, chinese 告訴, pinyin gào sù, zhuin ㄍㄠˋ ㄙㄨˋ },
+              { id 9-6, chinese 教室, pinyin jiào shì, zhuin ㄐㄧㄠˋ ㄕˋ },
+              { id 9-7, chinese 南方, pinyin nán fāng, zhuin ㄋㄢˊ ㄈㄤ },
+              { id 9-8, chinese 所以, pinyin suǒ yǐ, zhuin ㄙㄨㄛˇ ㄧˇ },
+              { id 9-9, chinese 它, pinyin tā, zhuin ㄊㄚ },
+              { id 9-10, chinese 校門口, pinyin xiào mén kǒu, zhuin ㄒㄧㄠˋ ㄇㄣˊ ㄎㄡˇ },
+              { id 9-11, chinese 西方, pinyin xī fāng, zhuin ㄒㄧ ㄈㄤ },
+              { id 9-12, chinese 因為, pinyin yīn wèi, zhuin ㄧㄣ ㄨㄟˋ },
+              { id 9-13, chinese 足球場, pinyin zú qiú chǎng, zhuin ㄗㄨˊ ㄑㄧㄡˊ ㄔㄤˇ },
+              { id 9-14, chinese 指北針, pinyin zhǐ běi zhēn, zhuin ㄓˇ ㄅㄟˇ ㄓㄣ },
+              { id 9-15, chinese 指南針, pinyin zhǐ nán zhēn, zhuin ㄓˇ ㄋㄢˊ ㄓㄣ },
+            ]
+          },
+          10 {
+            title 第十課：外公、外婆住在臺灣,
+            words [
+              { id 10-1, chinese 本來, pinyin běn lái, zhuin ㄅㄣˇ ㄌㄞˊ },
+              { id 10-2, chinese 法國, pinyin Fǎ guó, zhuin ㄈㄚˇ ㄍㄨㄛˊ },
+              { id 10-3, chinese 舅舅, pinyin jiù jiu, zhuin ㄐㄧㄡˋ ㄐㄧㄡ˙ },
+              { id 10-4, chinese 看, pinyin kàn, zhuin ㄎㄢˋ },
+              { id 10-5, chinese 旅行, pinyin lǚ xíng, zhuin ㄌㄩˇ ㄒㄧㄥˊ },
+              { id 10-6, chinese 紐約, pinyin Niǔ yuē, zhuin ㄋㄧㄡˇ ㄩㄝ },
+              { id 10-7, chinese 臺北, pinyin Tái běi, zhuin ㄊㄞˊ ㄅㄟˇ },
+              { id 10-8, chinese 臺南, pinyin Tái nán, zhuin ㄊㄞˊ ㄋㄢˊ },
+              { id 10-9, chinese 退休, pinyin tuì xiū, zhuin ㄊㄨㄟˋ ㄒㄧㄡ },
+              { id 10-10, chinese 一次, pinyin yí cì, zhuin ㄧˊ ㄘˋ },
+              { id 10-11, chinese 住在, pinyin zhù zài, zhuin ㄓㄨˋ ㄗㄞˋ },
+              { id 10-12, chinese 暑假, pinyin shǔ jià, zhuin ㄕㄨˇ ㄐㄧㄚˋ },
+            ]
+          },
+          11 {
+            title 第十一課：去動物園,
+            words [
+              { id 11-1, chinese 不但, pinyin bú dàn, zhuin ㄅㄨˊ ㄉㄢˋ },
+              { id 11-2, chinese 脖子, pinyin bó zi, zhuin ㄅㄛˊ ㄗ˙ },
+              { id 11-3, chinese 長頸鹿, pinyin cháng jǐng lù, zhuin ㄔㄤˊ ㄐㄧㄥˇ ㄌㄨˋ },
+              { id 11-4, chinese 大象, pinyin dà xiàng, zhuin ㄉㄚˋ ㄒㄧㄤˋ },
+              { id 11-5, chinese 動物園, pinyin dòng wù yuán, zhuin ㄉㄨㄥˋ ㄨˋ ㄩㄢˊ },
+              { id 11-6, chinese 猴子, pinyin hóu zi, zhuin ㄏㄡˊ ㄗ˙ },
+              { id 11-7, chinese 看到, pinyin kàn dào, zhuin ㄎㄢˋ ㄉㄠˋ },
+              { id 11-8, chinese 老虎, pinyin lǎo hǔ, zhuin ㄌㄠˇ ㄏㄨˇ },
+              { id 11-9, chinese 胖, pinyin pàng, zhuin ㄆㄤˋ },
+              { id 11-10, chinese 企鵝, pinyin qì é, zhuin ㄑㄧˋ ㄜˊ },
+              { id 11-11, chinese 玩, pinyin wán, zhuin ㄨㄢˊ },
+      { id 11-12, chinese 熊貓, pinyin xióng māo, zhuin ㄒㄩㄥˊ ㄇㄠ },
+              { id 11-13, chinese 希望, pinyin xī wàng, zhuin ㄒㄧ ㄨㄤˋ },
+              { id 11-14, chinese 這一次, pinyin zhè yí cì, zhuin ㄓㄜˋ ㄧˊ ㄘˋ },
+              { id 11-15, chinese 長, pinyin cháng, zhuin ㄔㄤˊ },
+              { id 11-16, chinese 真, pinyin zhēn, zhuin ㄓㄣ },
+            ]
+          },
+          12 {
+            title 第十二課：打網路電話,
+            words [
+              { id 12-1, chinese 啊, pinyin a, zhuin ㄚ˙ },
+              { id 12-2, chinese 過來, pinyin guò lái, zhuin ㄍㄨㄛˋ ㄌㄞˊ },
+              { id 12-3, chinese 很久, pinyin hěn jiǔ, zhuin ㄏㄣˇ ㄐㄧㄡˇ },
+              { id 12-4, chinese 好好, pinyin hǎo hǎo, zhuin ㄏㄠˇ ㄏㄠˇ },
+              { id 12-5, chinese 看起來, pinyin kàn qǐ lái, zhuin ㄎㄢˋ ㄑㄧˇ ㄌㄞˊ },
+              { id 12-6, chinese 沒問題, pinyin méi wèn tí, zhuin ㄇㄟˊ ㄨㄣˋ ㄊㄧˊ },
+              { id 12-7, chinese 上課, pinyin shàng kè, zhuin ㄕㄤˋ ㄎㄜˋ },
+              { id 12-8, chinese 說話, pinyin shuō huà, zhuin ㄕㄨㄛ ㄏㄨㄚˋ },
+              { id 12-9, chinese 瘦, pinyin shòu, zhuin ㄕㄡˋ },
+              { id 12-10, chinese 網路, pinyin wǎng lù, zhuin ㄨㄤˇ ㄌㄨˋ },
+              { id 12-11, chinese 寫, pinyin xiě, zhuin ㄒㄧㄝˇ },
+              { id 12-12, chinese 信, pinyin xìn, zhuin ㄒㄧㄣˋ },
+              { id 12-13, chinese 有意思, pinyin yǒu yì si, zhuin ㄧㄡˇ ㄧˋ ㄙ˙ },
+              { id 12-14, chinese 一定, pinyin yí dìng, zhuin ㄧˊ ㄉㄧㄥˋ },
+              { id 12-15, chinese 影像, pinyin yǐng xiàng, zhuin ㄧㄥˇ ㄒㄧㄤˋ },
+              { id 12-16, chinese 長高, pinyin zhǎng gāo, zhuin ㄓㄤˇ ㄍㄠ },
+              { id 12-17, chinese 電話, pinyin diàn huà, zhuin ㄉㄧㄢˋ ㄏㄨㄚˋ },
+            ]
+          }
+        };
+
+         綜合所有課程的資料
+        const ALL_WORDS_FALLBACK = Object.values(DEFAULT_LESSON_DATA).flatMap(lesson = lesson.words);
+
+         --- 遊戲參數 ---
+        const SPAWN_RATE = 2000;
+        const FALL_SPEED_BASE = 0.35;
+        const GAME_WIDTH_PCT = 85;
+
+        function ChineseFallingGame() {
+          const [gameState, setGameState] = useState('menu');
+          const [selectedLessonId, setSelectedLessonId] = useState(null); 
+          const [customData, setCustomData] = useState([]); 
+          const [customInputText, setCustomInputText] = useState(
+            早安, zǎo ān, ㄗㄠˇ ㄢn學校, xué xiào, ㄒㄩㄝˊ ㄒㄧㄠˋn朋友, péng yǒu, ㄆㄥˊ ㄧㄡˇ
+          );
+          
+          const [score, setScore] = useState(0);
+          const [lives, setLives] = useState(5);
+          const [options, setOptions] = useState([]); 
+          const [targetWordId, setTargetWordId] = useState(null);
+           Remove state based fallingWords for logic, use only for rendering
+          const [fallingWords, setFallingWords] = useState([]); 
+          const [hitEffect, setHitEffect] = useState(null);
+          const [countdown, setCountdown] = useState(3);
+          const [combo, setCombo] = useState(0);
+          const [bottomWarn, setBottomWarn] = useState(false);
+          const [prevGameState, setPrevGameState] = useState('menu');
+          const [shareUrl, setShareUrl] = useState('');
+          const [showShareToast, setShowShareToast] = useState(false);
+          
+           Added New state for reward (gift box)
+          const [isRewardOpened, setIsRewardOpened] = useState(false);
+
+           UI Only States for display
+          const [currentStageDisplay, setCurrentStageDisplay] = useState(0);
+          const [masteredCountDisplay, setMasteredCountDisplay] = useState(0);
+          const [stageGoalDisplay, setStageGoalDisplay] = useState(0);
+
+           Refs for Game Logic (Sources of Truth)
+          const requestRef = useRef();
+          const containerRef = useRef(null);  Reference for main game container
+          const stateRef = useRef({
+            fallingWords [],  Array of word objects
+            isPlaying false,
+            lastTime 0,
+            spawnTimer 0,
+            score 0,
+            currentLessonWords [],
+            title ,
+            masteredWords new Set(),
+            wrongWordIds new Set(),
+            currentStage 0,
+            stageGoals [],
+            combo 0
+          });
+
+           Check URL params on mount
+          useEffect(() = {
+            const params = new URLSearchParams(window.location.search);
+            const lessonParam = params.get('lesson');
+            
+            if (lessonParam && DEFAULT_LESSON_DATA[lessonParam]) {
+                setSelectedLessonId(lessonParam);
+                setGameState('singleLessonIntro');
+            }
+          }, []);
+
+          const parseCustomInput = (text) = {
+            const lines = text.split('n');
+            const parsed = [];
+            lines.forEach((line, index) = {
+              const parts = line.split([,，]).map(s = s.trim()).filter(s = s);
+              if (parts.length = 3) {
+                parsed.push({
+                  id `custom-${index}`,
+                  chinese parts[0],
+                  pinyin parts[1],
+                  zhuin parts[2]
+                });
+              }
+            });
+            return parsed;
+          };
+
+          const speak = (text) = {
+            if ('speechSynthesis' in window) {
+              window.speechSynthesis.cancel();
+              const utterance = new SpeechSynthesisUtterance(text);
+              utterance.lang = 'zh-TW';
+              utterance.rate = 0.9;
+              window.speechSynthesis.speak(utterance);
+            }
+          };
+
+          const playSound = (type) = {
+            const AudioContext = window.AudioContext  window.webkitAudioContext;
+            if (!AudioContext) return;
+
+            const ctx = new AudioContext();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+
+            if (type === 'error') {
+              osc.type = 'sawtooth';
+              osc.frequency.setValueAtTime(150, ctx.currentTime);
+              osc.frequency.linearRampToValueAtTime(100, ctx.currentTime + 0.1);
+              gain.gain.setValueAtTime(0.5, ctx.currentTime);
+              gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+              osc.start();
+              osc.stop(ctx.currentTime + 0.3);
+            } else if (type === 'correct') {
+              osc.type = 'sine';
+              osc.frequency.setValueAtTime(600, ctx.currentTime);
+              osc.frequency.exponentialRampToValueAtTime(800, ctx.currentTime + 0.1);
+              gain.gain.setValueAtTime(0.3, ctx.currentTime);
+              gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.2);
+              osc.start();
+              osc.stop(ctx.currentTime + 0.2);
+            } else if (type === 'victory') {
+                const now = ctx.currentTime;
+                [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) = {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(freq, now + i  0.15);
+                    gain.gain.setValueAtTime(0.2, now + i  0.15);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + i  0.15 + 0.8);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(now + i  0.15);
+                    osc.stop(now + i  0.15 + 0.8);
+                });
+            }
+          };
+
+          const generateOptions = useCallback((correctWord) = {
+            if (!correctWord) return [];
+            
+            let pool = stateRef.current.currentLessonWords;
+            if (pool.length  3) {
+              pool = [...pool, ...ALL_WORDS_FALLBACK];
+            }
+
+            const distractors = pool
+              .filter(item = item.chinese !== correctWord.chinese)
+              .sort(() = 0.5 - Math.random())
+              .slice(0, 2);
+
+            const newOptions = [
+              { ...correctWord, isCorrect true },
+              ...distractors.map(d = ({ ...d, isCorrect false, wordId d.id }))
+            ];
+
+            return newOptions.sort(() = 0.5 - Math.random());
+          }, []);
+
+           Updated spawnWord to only update Ref, avoiding conflict with gameLoop render
+          const spawnWord = useCallback(() = {
+            const { currentLessonWords, masteredWords, fallingWords, currentStage, score } = stateRef.current;
+
+            const candidates = currentLessonWords.filter(w = 
+              !masteredWords.has(w.id) && 
+              !fallingWords.some(fw = fw.wordId === w.id)
+            );
+
+            if (candidates.length === 0) return;
+
+            const randomItem = candidates[Math.floor(Math.random()  candidates.length)];
+            
+             Adjusted range to prevent clipping on leftright edges
+             Was Math.random()  (GAME_WIDTH_PCT - 15) + 5;
+             New Range from 15% to 85% to accommodate wider words centered at X
+            const randomX = Math.random()  70 + 15; 
+            
+             Slower stage multiplier (was 0.125, now 0.1 to slow down progression every 3 stages)
+            const speedLevel = Math.floor(currentStage  3);
+            const stageMultiplier = 1 + (speedLevel  0.1); 
+            
+            const finalSpeed = Math.min(1.5, FALL_SPEED_BASE  stageMultiplier);
+
+            const newWord = {
+              id Date.now() + Math.random(),
+              wordId randomItem.id,
+              chinese randomItem.chinese,
+              pinyin randomItem.pinyin,
+              zhuin randomItem.zhuin,
+              x randomX,
+              y -15,
+              speed finalSpeed
+            };
+
+             Only push to Ref, let loop handle the state update
+            stateRef.current.fallingWords.push(newWord);
+          }, []);
+
+          const endStage = (stageIndex) = {
+            stateRef.current.isPlaying = false;
+            if (requestRef.current) cancelAnimationFrame(requestRef.current);
+            
+            const goals = stateRef.current.stageGoals;
+            if (stageIndex = goals.length - 1) {
+               Changed Do NOT play victory sound yet
+               Reset opened state for the new victory
+              setIsRewardOpened(false); 
+              setGameState('victory');
+            } else {
+              setGameState('stageClear');
+            }
+          };
+
+          const gameLoop = useCallback((time) = {
+            if (!stateRef.current.isPlaying) return;
+
+            if (stateRef.current.lastTime === 0) {
+              stateRef.current.lastTime = time;
+              stateRef.current.spawnTimer = time;
+            }
+
+            let deltaTime = time - stateRef.current.lastTime;
+            if (deltaTime  100) deltaTime = 16;
+            
+            stateRef.current.lastTime = time;
+
+            const { currentStage, score, fallingWords currentFallingWords } = stateRef.current;
+            
+             Slower spawn rate increase
+            const speedLevel = Math.floor(currentStage  3);
+            const stageRateMod = speedLevel  100;  Reduce 100ms every 3 stages
+            let currentRate = Math.max(1200, SPAWN_RATE - (score  1) - stageRateMod);  Min 1.2s
+            
+            if (currentFallingWords.length === 0) {
+              currentRate = 500;
+            }
+
+            if (time - stateRef.current.spawnTimer  currentRate) {
+              spawnWord();
+              stateRef.current.spawnTimer = time;
+            }
+
+            let nextWords = [];
+            let livesLostCount = 0;
+            let lowestWord = null;
+            let maxY = -100;
+
+             IMMUTABLE UPDATE PATTERN Create new objects for moved words
+            stateRef.current.fallingWords.forEach(word = {
+               Calculate new Y position
+              const newY = word.y + word.speed  (deltaTime  16);
+
+              if (newY  maxY) {
+                maxY = newY;
+                lowestWord = word;
+              }
+
+              if (newY  78) {
+                livesLostCount++;
+                stateRef.current.wrongWordIds.add(word.wordId);
+              } else {
+                 Create NEW object to force React to re-render
+                nextWords.push({ ...word, y newY });
+              }
+            });
+
+            stateRef.current.fallingWords = nextWords;
+            
+            setTargetWordId(prevId = {
+                if (!lowestWord) return null;
+                if (lowestWord.id !== prevId) {
+                    setOptions(generateOptions(lowestWord));
+                    return lowestWord.id;
+                }
+                return prevId;
+            });
+
+             Sync to React State for Render
+            setFallingWords(nextWords);
+
+            if (livesLostCount  0) {
+              setBottomWarn(true);
+              setTimeout(() = setBottomWarn(false), 300);
+
+              stateRef.current.spawnTimer = time - currentRate + 100;
+
+              stateRef.current.combo = 0;
+              setCombo(0);
+
+              setLives(prev = {
+                const newLives = prev - livesLostCount;
+                if (newLives = 0) {
+                  stateRef.current.isPlaying = false;
+                  setGameState('gameover');
+                  return 0;
+                }
+                return newLives;
+              });
+            }
+
+            if (stateRef.current.isPlaying) {
+                requestRef.current = requestAnimationFrame(gameLoop);
+            }
+          }, [generateOptions, spawnWord]);
+
+          const handleOptionClick = (option) = {
+            speak(option.chinese);
+
+            if (!targetWordId) return;
+
+            const targetWord = stateRef.current.fallingWords.find(w = w.id === targetWordId);
+            
+             Add safety check
+            if (!targetWord) {
+                return;
+            }
+            
+            if (targetWord && (option.wordId === targetWord.wordId  option.chinese === targetWord.chinese)) {
+               CORRECT
+              playSound('correct');
+              setHitEffect({ x targetWord.x, y targetWord.y });
+              setTimeout(() = setHitEffect(null), 500);
+
+              const nextWords = stateRef.current.fallingWords.filter(w = w.id !== targetWordId);
+              stateRef.current.fallingWords = nextWords;
+              setFallingWords(nextWords); 
+              
+              stateRef.current.masteredWords.add(targetWord.wordId);
+              setMasteredCountDisplay(stateRef.current.masteredWords.size);
+
+               Combo Logic
+              const newCombo = stateRef.current.combo + 1;
+              stateRef.current.combo = newCombo;
+              setCombo(newCombo);
+
+              const comboBonus = Math.floor(newCombo  5)  5; 
+
+              setScore(s = {
+                  const newScore = s + 10 + comboBonus;
+                  stateRef.current.score = newScore;
+                  return newScore;
+              });
+
+              const { masteredWords, currentStage, stageGoals } = stateRef.current;
+              if (masteredWords.size = stageGoals[currentStage]) {
+                 endStage(currentStage);
+              }
+
+            } else {
+               WRONG
+              playSound('error');
+              stateRef.current.combo = 0;
+              setCombo(0);
+              
+              stateRef.current.wrongWordIds.add(targetWord.wordId);
+              
+              const container = containerRef.current;
+              if (container) {
+                container.classList.add('animate-shake');
+                setTimeout(() = container.classList.remove('animate-shake'), 200); 
+              }
+            }
+          };
+
+          const startCountdown = () = {
+            setCountdown(3);
+            setGameState('countdown');
+          };
+
+          useEffect(() = {
+            if (gameState === 'countdown') {
+              if (countdown  0) {
+                const timer = setTimeout(() = setCountdown(c = c - 1), 1000);
+                return () = clearTimeout(timer);
+              } else {
+                setGameState('playing');
+                stateRef.current.isPlaying = true;
+                stateRef.current.lastTime = 0;
+                stateRef.current.spawnTimer = 0;
+                requestRef.current = requestAnimationFrame(gameLoop);
+              }
+            }
+          }, [gameState, countdown, gameLoop]);
+
+           Pause Logic
+          const togglePause = () = {
+            if (gameState === 'playing') {
+              stateRef.current.isPlaying = false;
+              if (requestRef.current) cancelAnimationFrame(requestRef.current);
+              setGameState('paused');
+            } else if (gameState === 'paused') {
+              setGameState('countdown');  Resume with countdown
+              setCountdown(3);
+            }
+          };
+
+          const exitFromPause = () = {
+            stateRef.current.isPlaying = false;
+            setGameState('menu');
+          };
+
+          const restartFromPause = () = {
+             Restart current level
+            const { currentLessonWords, title } = stateRef.current;
+            
+             Recalculate goals logic (same as startGame)
+            const totalWords = currentLessonWords.length;
+            let goals = [];
+            if (totalWords  30) {
+                const chunkSize = 15;
+                for (let count = chunkSize; count  totalWords; count += chunkSize) {
+                    goals.push(count);
+                }
+                goals.push(totalWords);
+            } else {
+                if (totalWords  8) {
+                    goals = [totalWords];
+                } else if (totalWords  15) {
+                    goals = [Math.ceil(totalWords  0.4), totalWords];
+                } else {
+                    goals = [Math.ceil(totalWords  0.3), Math.ceil(totalWords  0.65), totalWords];
+                }
+            }
+
+            setScore(0);
+            setLives(5);
+            setCombo(0);
+            setFallingWords([]);
+            setTargetWordId(null);
+            setOptions([]);
+            setCurrentStageDisplay(0);
+            setMasteredCountDisplay(0);
+            setStageGoalDisplay(goals[0]);
+
+            stateRef.current = {
+              fallingWords [],
+              isPlaying false,
+              lastTime 0,
+              spawnTimer 0,
+              score 0,
+              currentLessonWords currentLessonWords,
+              title title,
+              masteredWords new Set(),
+              wrongWordIds new Set(),
+              currentStage 0,
+              stageGoals goals,
+              combo 0
+            };
+
+            startCountdown();
+          };
+
+           Confetti Loop - Modified to check isRewardOpened
+          useEffect(() = {
+            if (gameState !== 'victory'  !isRewardOpened) return;
+            
+            const canvas = document.getElementById('confetti-canvas');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            const particles = [];
+            const colors = ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3', '#03a9f4', '#00bcd4', '#009688', '#4caf50', '#8bc34a', '#cddc39', '#ffeb3b', '#ffc107', '#ff9800', '#ff5722'];
+            
+            const createParticle = () = {
+                return {
+                    x Math.random()  canvas.width,
+                    y Math.random()  canvas.height - canvas.height,
+                    color colors[Math.floor(Math.random()  colors.length)],
+                    size Math.random()  10 + 5,
+                    speed Math.random()  5 + 2,
+                    angle Math.random()  360,
+                    spin Math.random()  0.5  -1  1
+                };
+            };
+
+             Fill initial particles
+            for (let i = 0; i  150; i++) {
+                particles.push(createParticle());
+            }
+
+            const animate = () = {
+                if (gameState !== 'victory') return;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                particles.forEach((p, i) = {
+                    p.y += p.speed;
+                    p.angle += p.spin;
+                    
+                    ctx.save();
+                    ctx.translate(p.x, p.y);
+                    ctx.rotate(p.angle  Math.PI  180);
+                    ctx.fillStyle = p.color;
+                    ctx.fillRect(-p.size  2, -p.size  2, p.size, p.size);
+                    ctx.restore();
+
+                    if (p.y  canvas.height) {
+                        particles[i] = createParticle();
+                        particles[i].y = -10;
+                    }
+                });
+                
+                requestAnimationFrame(animate);
+            };
+
+            animate();
+
+          }, [gameState, isRewardOpened]);
+
+          const nextStage = () = {
+            const nextStageIdx = stateRef.current.currentStage + 1;
+            stateRef.current.currentStage = nextStageIdx;
+            stateRef.current.fallingWords = [];
+            setCurrentStageDisplay(nextStageIdx);
+            setStageGoalDisplay(stateRef.current.stageGoals[nextStageIdx]);
+            setFallingWords([]);
+            startCountdown();
+          };
+
+          const handleKeyDown = useCallback((e) = {
+            if (gameState !== 'playing') return;
+            if (e.key === '1' && options[0]) handleOptionClick(options[0]);
+            if (e.key === '2' && options[1]) handleOptionClick(options[1]);
+            if (e.key === '3' && options[2]) handleOptionClick(options[2]);
+          }, [gameState, options, targetWordId]);
+
+          useEffect(() = {
+            window.addEventListener('keydown', handleKeyDown);
+            return () = window.removeEventListener('keydown', handleKeyDown);
+          }, [handleKeyDown]);
+
+           New function to handle opening the reward
+          const handleOpenReward = () = {
+            setIsRewardOpened(true);
+            playSound('victory');
+          };
+
+          const startGame = (type, idOrData, fromState = undefined) = {
+            if (requestRef.current) {
+              cancelAnimationFrame(requestRef.current);
+            }
+
+             Update prevGameState if fromState is provided (not retry)
+            if (fromState) {
+                setPrevGameState(fromState);
+            }
+
+            let wordsPool = [];
+            let lessonTitle = ;
+
+            if (type === 'preset') {
+              if (idOrData === 'all') {
+                wordsPool = ALL_WORDS_FALLBACK;
+                lessonTitle = 綜合複習;
+                setSelectedLessonId('all');
+              } else {
+                if (!DEFAULT_LESSON_DATA[idOrData]) {
+                    console.error(Invalid lesson ID, idOrData);
+                    return;
+                }
+                wordsPool = DEFAULT_LESSON_DATA[idOrData].words;
+                lessonTitle = DEFAULT_LESSON_DATA[idOrData].title.split('：')[1];
+                setSelectedLessonId(idOrData);
+              }
+            } else if (type === 'custom') {
+              if (!idOrData  idOrData.length === 0) {
+                alert(請輸入至少一個生詞);
+                return;
+              }
+              wordsPool = idOrData;
+              lessonTitle = 自訂題庫;
+              setSelectedLessonId('custom');
+            }
+
+            const totalWords = wordsPool.length;
+            let goals = [];
+            
+             Logic for large datasets (e.g. ALL words review)
+            if (totalWords  30) {
+                const chunkSize = 15;  Every 15 words is a stage
+                for (let count = chunkSize; count  totalWords; count += chunkSize) {
+                    goals.push(count);
+                }
+                goals.push(totalWords);  Add the final total
+            } else {
+                 Logic for single lessons
+                if (totalWords  8) {
+                    goals = [totalWords];
+                } else if (totalWords  15) {
+                    goals = [Math.ceil(totalWords  0.4), totalWords];
+                } else {
+                    goals = [Math.ceil(totalWords  0.3), Math.ceil(totalWords  0.65), totalWords];
+                }
+            }
+
+            setScore(0);
+            setLives(5);
+            setCombo(0);
+            setFallingWords([]);
+            setTargetWordId(null);
+            setOptions([]);
+            setCurrentStageDisplay(0);
+            setMasteredCountDisplay(0);
+            setStageGoalDisplay(goals[0]);
+
+            stateRef.current = {
+              fallingWords [],
+              isPlaying false, 
+              lastTime 0,
+              spawnTimer 0,
+              score 0,
+              currentLessonWords wordsPool,
+              title lessonTitle,
+              masteredWords new Set(),
+              wrongWordIds new Set(),
+              currentStage 0,
+              stageGoals goals,
+              combo 0
+            };
+
+            startCountdown();
+          };
+
+          const retryMistakes = () = {
+            const wrongWords = stateRef.current.currentLessonWords.filter(w = stateRef.current.wrongWordIds.has(w.id));
+            if (wrongWords.length === 0) return;
+            
+             FIX Update customData state so that Play Again can access it later if needed
+            setCustomData(wrongWords);
+            
+            startGame('custom', wrongWords);
+          };
+          
+          const handleCopyLink = (lessonId) = {
+             const url = new URL(window.location.href);
+             url.searchParams.set('lesson', lessonId);
+             const text = url.toString();
+             
+              Create temporary element
+             const textArea = document.createElement(textarea);
+             textArea.value = text;
+             
+              Ensure it's not visible but part of DOM
+             textArea.style.position = fixed;
+             textArea.style.left = -9999px;
+             textArea.style.top = 0;
+             document.body.appendChild(textArea);
+             
+             textArea.focus();
+             textArea.select();
+             
+             try {
+                const successful = document.execCommand('copy');
+                if(successful) {
+                    setShowShareToast(true);
+                    setTimeout(() = setShowShareToast(false), 2000);
+                }
+             } catch (err) {
+                console.error('Copy failed', err);
+             }
+             
+             document.body.removeChild(textArea);
+          };
+
+          useEffect(() = {
+            return () = {
+                if (requestRef.current) cancelAnimationFrame(requestRef.current);
+            };
+          }, []);
+
+          return (
+            div ref={containerRef} id=game-container className=h-[100dvh] w-full bg-sky-900 text-white font-sans overflow-hidden relative selectionbg-none flex flex-col
+              
+              div className=absolute inset-0 overflow-hidden pointer-events-none
+                div className=absolute top-20 left-10 text-sky-80050 text-9xl font-serif select-none華div
+                div className=absolute bottom-40 right-10 text-sky-80050 text-9xl font-serif select-none語div
+                div className=absolute top-32 right-32 w-20 h-8 bg-white10 rounded-full blur-xldiv
+              div
+              
+              { Toast Notification }
+              {showShareToast && (
+                div className=absolute top-4 left-12 -translate-x-12 bg-black80 text-white px-4 py-2 rounded-full shadow-lg z-[100] animate-fade-in-up
+                  已複製課程連結！
+                div
+              )}
+
+              {gameState === 'victory' && isRewardOpened && (
+                canvas 
+                    id=confetti-canvas
+                    width={window.innerWidth} 
+                    height={window.innerHeight} 
+                    className=absolute inset-0 z-[60] pointer-events-none
+                
+              )}
+
+              { Pause Menu Overlay }
+              {gameState === 'paused' && (
+                div className=absolute inset-0 flex items-center justify-center z-50 bg-sky-90060 backdrop-blur-md
+                  div className=bg-white text-sky-900 p-8 rounded-3xl shadow-2xl max-w-sm w-full text-center border-4 border-sky-200 animate-fade-in-up
+                    h2 className=text-3xl font-bold mb-6 text-sky-800 flex items-center justify-center gap-2
+                      Pause size={32}  遊戲暫停
+                    h2
+                    
+                    div className=flex flex-col gap-3
+                      button 
+                        onClick={togglePause}
+                        className=w-full bg-green-500 hoverbg-green-600 text-white text-xl py-4 rounded-xl font-bold shadow-lg flex items-center justify-center gap-2
+                      
+                        PlayCircle size={24} fill=currentColor  繼續遊戲
+                      button
+                      
+                      button 
+                        onClick={restartFromPause}
+                        className=w-full bg-sky-500 hoverbg-sky-600 text-white text-lg py-3 rounded-xl font-bold shadow-md flex items-center justify-center gap-2
+                      
+                        RotateCcw size={20}  重新開始
+                      button
+                      
+                      button 
+                        onClick={exitFromPause}
+                        className=w-full bg-white hoverbg-gray-50 border-2 border-gray-200 text-gray-600 text-lg py-3 rounded-xl font-bold flex items-center justify-center gap-2
+                      
+                        {prevGameState === 'menu'  Home size={20}   ArrowLeft size={20} }
+                        {prevGameState === 'menu'  '回主選單'  '返回上一頁'}
+                      button
+                    div
+                  div
+                div
+              )}
+
+              { Menu Screen }
+              {gameState === 'menu' && (
+                div className=absolute inset-0 flex flex-col items-center justify-center z-50 bg-sky-95080 backdrop-blur-sm p-4
+                   div className=bg-white text-sky-900 p-8 rounded-3xl shadow-2xl max-w-sm w-full text-center border-4 border-sky-200
+                      div className=w-20 h-20 bg-sky-500 rounded-full flex items-center justify-center mx-auto mb-6 text-white shadow-lg
+                          Volume2 size={40} 
+                      div
+                      h1 className=text-3xl font-bold mb-2 text-sky-800生詞特訓班h1
+                      p className=text-sky-600 mb-6 font-medium學華語向前走 第二冊p
+                      
+                      button type=button onClick={() = setGameState('levelSelect')} className=w-full bg-sky-500 hoverbg-sky-600 text-white text-xl py-4 rounded-xl font-bold shadow-lg mb-3 flex items-center justify-center gap-2 transition-transform activescale-95
+                          Play fill=currentColor  開始闖關
+                      button
+                      
+                      button type=button onClick={() = setGameState('customEditor')} className=w-full bg-indigo-500 hoverbg-indigo-600 text-white text-lg py-3 rounded-xl font-bold shadow-lg mb-3 flex items-center justify-center gap-2 transition-transform activescale-95
+                          Edit3 size={20}  自訂題庫
+                      button
+
+                      button type=button onClick={() = startGame('preset', 'all', 'menu')} className=w-full bg-amber-500 hoverbg-amber-600 text-white text-lg py-3 rounded-xl font-bold shadow-lg flex items-center justify-center gap-2 transition-transform activescale-95
+                          Grid size={20}  綜合複習
+                      button
+
+                      div className=mt-6 text-xs text-sky-300 font-medium
+                        Design by Sophia Wong
+                      div
+                   div
+                div
+              )}
+              
+              { Single Lesson Intro Screen (from URL share) }
+              {gameState === 'singleLessonIntro' && (
+                div className=absolute inset-0 flex flex-col items-center justify-center z-50 bg-sky-95080 backdrop-blur-sm p-4
+                   div className=bg-white text-sky-900 p-8 rounded-3xl shadow-2xl max-w-sm w-full text-center border-4 border-sky-200
+                      div className=w-20 h-20 bg-sky-500 rounded-full flex items-center justify-center mx-auto mb-6 text-white shadow-lg
+                          Target size={40} 
+                      div
+                      h1 className=text-2xl font-bold mb-2 text-sky-800專屬挑戰h1
+                      p className=text-sky-600 mb-6 font-medium text-lg
+                        {DEFAULT_LESSON_DATA[selectedLessonId].title  自訂課程}
+                      p
+                      
+                      button 
+                        type=button 
+                        onClick={() = startGame('preset', selectedLessonId, 'menu')} 
+                        className=w-full bg-sky-500 hoverbg-sky-600 text-white text-xl py-4 rounded-xl font-bold shadow-lg mb-3 flex items-center justify-center gap-2 transition-transform activescale-95
+                      
+                          Play fill=currentColor  開始練習
+                      button
+
+                      button 
+                        type=button 
+                        onClick={() = setGameState('menu')} 
+                        className=w-full bg-white hoverbg-gray-100 text-sky-600 border-2 border-sky-200 text-lg py-3 rounded-xl font-bold flex items-center justify-center gap-2
+                      
+                          Home size={20}  回主選單
+                      button
+                   div
+                div
+              )}
+
+              { Custom Editor Screen }
+              {gameState === 'customEditor' && (
+                div className=absolute inset-0 flex flex-col z-50 bg-sky-900 overflow-y-auto
+                  div className=p-4 max-w-lg mx-auto w-full h-full flex flex-col
+                    button onClick={() = setGameState('menu')} className=flex items-center gap-1 text-sky-300 mb-4 hovertext-white shrink-0
+                      ArrowLeft size={20}  返回主選單
+                    button
+                    h2 className=text-2xl font-bold text-white mb-2 text-center自訂生詞表h2
+                    div className=bg-sky-80050 p-3 rounded-lg text-sm text-sky-200 mb-4 flex gap-2
+                      Info size={24} className=shrink-0 text-sky-400 
+                      p請依序輸入：brb生詞, 拼音, 注音b (用逗號分隔，一行一個)br例如：早安, zǎo ān, ㄗㄠˇ ㄢp
+                    div
+                    
+                    textarea 
+                      className=flex-1 w-full bg-slate-800 text-white p-4 rounded-xl border-2 border-slate-600 focusborder-indigo-400 focusoutline-none font-mono text-lg leading-relaxed mb-4 resize-none shadow-inner
+                      value={customInputText}
+                      onChange={(e) = setCustomInputText(e.target.value)}
+                      placeholder=早安, zǎo ān, ㄗㄠˇ ㄢ
+                    
+
+                    button 
+                      type=button
+                      onClick={() = {
+                        const parsed = parseCustomInput(customInputText);
+                        if (parsed.length  0) {
+                          setCustomData(parsed);
+                          startGame('custom', parsed, 'customEditor');
+                        } else {
+                          alert(格式似乎不正確，請檢查您的輸入。);
+                        }
+                      }}
+                      className=w-full bg-green-500 hoverbg-green-600 text-white text-xl py-4 rounded-xl font-bold shadow-lg flex items-center justify-center gap-2 transition-transform activescale-95 shrink-0
+                    
+                      Play fill=currentColor  使用此內容開始遊戲
+                    button
+                  div
+                div
+              )}
+
+              { Level Select Screen }
+              {gameState === 'levelSelect' && (
+                div className=absolute inset-0 flex flex-col z-50 bg-sky-900 overflow-y-auto
+                  div className=p-4 max-w-lg mx-auto w-full
+                    button onClick={() = setGameState('menu')} className=flex items-center gap-1 text-sky-300 mb-4 hovertext-white
+                      ArrowLeft size={20}  返回主選單
+                    button
+                    h2 className=text-2xl font-bold text-white mb-6 text-center選擇課程h2
+                    
+                    div className=grid grid-cols-2 gap-4 pb-8
+                      {Object.entries(DEFAULT_LESSON_DATA).map(([id, data]) = (
+                        div key={id} className=relative group
+                            button 
+                              type=button
+                              onClick={() = startGame('preset', id, 'levelSelect')}
+                              className=w-full bg-white10 hoverbg-white20 border border-sky-50030 p-4 rounded-xl text-left transition-all activescale-95 flex flex-col gap-2 pr-12
+                            
+                              span className=text-xs text-sky-400 uppercase tracking-widerLesson {id}span
+                              span className=text-lg font-bold text-white truncate{data.title.split('：')[1]}span
+                            button
+                            button 
+                                onClick={(e) = {
+                                    e.stopPropagation();
+                                    handleCopyLink(id);
+                                }}
+                                className=absolute right-3 top-12 -translate-y-12 p-2 text-sky-400 hovertext-white hoverbg-white10 rounded-full transition-colors
+                                title=複製課程連結
+                            
+                                Share2 size={20} 
+                            button
+                        div
+                      ))}
+                    div
+                  div
+                div
+              )}
+
+              { Countdown Overlay }
+              {gameState === 'countdown' && (
+                div className=absolute inset-0 flex items-center justify-center z-50 bg-sky-90080 backdrop-blur-sm
+                  div className=text-9xl font-bold text-white animate-bounce
+                    {countdown}
+                  div
+                div
+              )}
+
+              { Playing  Paused HUD & Game Area }
+              {(gameState === 'playing'  gameState === 'paused') && (
+                
+                  div className=absolute top-0 left-0 right-0 p-4 flex justify-between items-start z-10 max-w-xl mx-auto w-full
+                    div className=flex items-start gap-2
+                      button 
+                        onClick={togglePause}
+                        className=mt-0.5 p-1.5 bg-black20 hoverbg-black40 rounded-lg text-white90 hovertext-white transition-colors backdrop-blur-sm
+                        title=暫停
+                      
+                        {gameState === 'paused'  Play size={20} fill=currentColor  Pause size={20} fill=currentColor }
+                      button
+                      div className=flex flex-col
+                        h1 className=text-xl font-bold text-sky-200 flex items-center gap-2 truncate max-w-[180px]
+                          {stateRef.current.title}
+                        h1
+                        
+                        div className=flex items-center gap-2 mt-1
+                          span className=text-xs bg-yellow-50080 px-2 py-0.5 rounded text-white font-bold
+                            關卡 {currentStageDisplay + 1}{stateRef.current.stageGoals.length}
+                          span
+                          div className=flex items-center text-xs text-sky-300
+                            CheckCircle size={12} className=mr-1 
+                            {masteredCountDisplay}  {stateRef.current.currentLessonWords.length}
+                          div
+                        div
+
+                        div className=w-32 h-1.5 bg-sky-90050 rounded-full mt-1 border border-sky-60050 overflow-hidden
+                          div 
+                            className=h-full bg-green-400 transition-all duration-500
+                            style={{ width `${Math.min(100, (masteredCountDisplay  stageGoalDisplay)  100)}%` }}
+                          div
+                        div
+                      div
+                    div
+
+                    div className=flex flex-col items-end gap-2
+                        div className=text-right
+                            p className=text-xs text-sky-400SCOREp
+                            p className=text-2xl font-mono font-bold text-white{score}p
+                        div
+                        {combo  1 && (
+                          div className=text-yellow-400 font-bold text-xl animate-pulse
+                            {combo} COMBO!
+                          div
+                        )}
+                        div className=flex gap-0.5
+                            {[...Array(5)].map((_, i) = (
+                            Heart 
+                                key={i} 
+                                size={18} 
+                                className={`${i  lives  'fill-red-500 text-red-500'  'text-sky-800'} transition-all`} 
+                            
+                            ))}
+                        div
+                    div
+                  div
+
+                  div className=relative w-full flex-1 max-w-xl mx-auto overflow-hidden z-0
+                    div className={`absolute bottom-[28%] w-full border-t-2 border-dashed ${bottomWarn  'border-red-500 bg-red-50020'  'border-red-50050'} pointer-events-none transition-colors duration-100 z-20`}
+                        span className=absolute right-0 -top-6 text-xs text-red-400 font-bold px-2警戒線span
+                    div
+
+                    {fallingWords.map((word) = {
+                        const isTarget = word.id === targetWordId;
+                        return (
+                            div
+                                key={word.id} 
+                                className=absolute transform -translate-x-12 transition-none will-change-transform z-30 
+                                style={{ left `${word.x}%`, top `${word.y}%` }}
+                            
+                                div className={`
+                                    relative flex flex-col items-center justify-center
+                                    bg-white text-sky-900 rounded-xl shadow-lg border-4 
+                                    ${isTarget  'border-yellow-400 scale-110 shadow-[0_0_20px_rgba(250,204,21,0.6)]'  'border-sky-200 opacity-100'}
+                                    px-4 py-3 min-w-[100px]
+                                `}
+                                    {isTarget && (
+                                        div className=absolute -top-8 text-yellow-300 animate-bounce
+                                            Target size={24} 
+                                        div
+                                    )}
+                                    span className=text-3xl mdtext-4xl font-bold font-serif text-slate-900 whitespace-nowrap{word.chinese}span
+                                div
+                            div
+                        );
+                    })}
+
+                    {hitEffect && (
+                        div 
+                        className=absolute transform -translate-x-12 -translate-y-12 pointer-events-none z-40
+                        style={{ left `${hitEffect.x}%`, top `${hitEffect.y}%` }}
+                        
+                            div className=relative
+                                div className=absolute inset-0 w-24 h-24 bg-yellow-300 rounded-full animate-ping opacity-80div
+                                div className=absolute inset-0 w-24 h-24 bg-white rounded-full animate-ping delay-75 opacity-50div
+                            div
+                        div
+                    )}
+                  div
+
+                  div className=absolute bottom-0 left-0 right-0 bg-sky-95095 backdrop-blur-md border-t border-sky-800 p-4 z-40 h-[25%] min-h-[160px]
+                      div className=max-w-xl mx-auto h-full flex flex-col justify-center
+                          div className=flex justify-between items-center mb-2 px-1 shrink-0
+                              span className=text-xs text-sky-400請選擇正確讀音 (1, 2, 3)span
+                              {targetWordId && span className=text-xs text-yellow-400 font-bold animate-pulse鎖定中...span}
+                          div
+                          
+                          div className=grid grid-cols-3 gap-3 h-full pb-2
+                              {options.map((opt, idx) = (
+                                  button
+                                      key={idx}
+                                      onClick={() = handleOptionClick(opt)}
+                                      className=bg-white10 hoverbg-white20 activebg-sky-600 border border-sky-60050 rounded-xl p-1 flex flex-col items-center justify-center transition-all h-full group relative overflow-hidden
+                                  
+                                      span className=absolute top-1 left-2 text-sky-60030 font-bold text-3xl -z-0 group-hoverscale-110 transition-transform{idx + 1}span
+                                      span className=text-xl font-bold text-white z-10 mb-0.5{opt.pinyin}span
+                                      span className=text-sm text-sky-200 z-10 font-mono text-center leading-tight{opt.zhuin}span
+                                  button
+                              ))}
+                              {options.length === 0 && (
+                                  div className=col-span-3 text-center flex items-center justify-center text-sky-500 italic h-full
+                                      等待目標出現...
+                                  div
+                              )}
+                          div
+                      div
+                  div
+                
+              )}
+
+              { Stage Clear Screen }
+              {gameState === 'stageClear' && (
+                div className=absolute inset-0 flex items-center justify-center z-50 bg-sky-95090 backdrop-blur-sm p-4
+                   div className=bg-white text-sky-900 p-8 rounded-3xl shadow-2xl max-w-sm w-full text-center border-4 border-green-400 animate-fade-in-up
+                      div className=w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6
+                        FastForward size={48} className=text-green-500 
+                      div
+                      h2 className=text-3xl font-bold mb-2 text-sky-800關卡 {currentStageDisplay + 1} 完成！h2
+                      p className=text-sky-600 mb-6
+                         已精熟 {masteredCountDisplay} 個單字。br
+                         
+                         { Motivational Messages based on stage }
+                         {(currentStageDisplay + 1) % 3 === 0  (
+                            span className=text-amber-600 font-bold mt-2 block text-lg animate-pulse
+                                {currentStageDisplay + 1 === 3 && 太棒了！已經通過三關了！}
+                                {currentStageDisplay + 1 === 6 && 不可思議！你的專注力真強！}
+                                {currentStageDisplay + 1 === 9 && 堅持住！勝利就在眼前！}
+                                {currentStageDisplay + 1  9 && 你是華語特訓大師！}
+                            span
+                         )  (
+                            span className=text-slate-400 font-bold mt-2 block
+                                {(currentStageDisplay + 1) % 3 === 2 
+                                     下一關速度將會稍微提升！ 
+                                     保持節奏，繼續前進！}
+                            span
+                         )}
+                      p
+                      
+                      button type=button onClick={nextStage} className=w-full bg-green-500 hoverbg-green-600 text-white text-lg py-3 rounded-xl font-bold shadow-md flex items-center justify-center gap-2
+                          Play size={24} fill=currentColor  繼續挑戰
+                      button
+                   div
+                div
+              )}
+
+              { Victory  Gameover Screen }
+              {(gameState === 'gameover'  gameState === 'victory') && (
+                div className=absolute inset-0 flex items-center justify-center z-50 bg-sky-95090 backdrop-blur-sm p-4 overflow-y-auto
+                     div className=bg-white text-sky-900 p-8 rounded-3xl shadow-2xl max-w-sm w-full text-center border-4 border-sky-200 animate-fade-in-up my-auto
+                        {gameState === 'victory' && !isRewardOpened  (
+                             禮物盒狀態
+                           
+                              div 
+                                onClick={handleOpenReward}
+                                className=w-32 h-32 bg-red-100 rounded-2xl flex items-center justify-center mx-auto mb-6 cursor-pointer hoverscale-110 transition-transform animate-bounce shadow-lg border-4 border-red-200
+                              
+                                Gift size={64} className=text-red-500 
+                              div
+                              h2 className=text-2xl font-bold mb-2 text-sky-800 animate-pulse恭喜通關！h2
+                              p className=text-sky-600 mb-6 text-lg font-bold點擊禮物盒領取獎勵！p
+                           
+                        )  (
+                            已拆開或是失敗狀態
+                           
+                                {gameState === 'victory'  (
+                                   
+                                      div className=w-20 h-20 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce
+                                        Trophy size={40} className=text-yellow-500 
+                                      div
+                                      h2 className=text-2xl font-bold mb-1 text-sky-800
+                                        {stateRef.current.wrongWordIds.size === 0  完美通關！  挑戰成功！}
+                                      h2
+                                      p className=text-sky-600 mb-4 text-sm太棒了！學會了 {stateRef.current.currentLessonWords.length} 個生詞。p
+                                   
+                                )  (
+                                   
+                                      div className=w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4
+                                        Heart size={40} className=text-gray-400 
+                                      div
+                                      h2 className=text-2xl font-bold mb-1 text-sky-800再接再厲h2
+                                      p className=text-sky-600 mb-4 text-sm加油，多練習幾次！p
+                                   
+                                )}
+                                
+                                {stateRef.current.wrongWordIds.size  0  (
+                                  div className=mb-4 bg-red-50 rounded-xl p-4 border border-red-100
+                                    div className=flex items-center gap-2 mb-3 text-red-600 font-bold border-b border-red-200 pb-2
+                                      AlertCircle size={18} 
+                                      錯題回顧 ({stateRef.current.wrongWordIds.size})
+                                    div
+                                    div className=max-h-40 overflow-y-auto pr-1 space-y-2 text-left
+                                      {stateRef.current.currentLessonWords
+                                        .filter(w = stateRef.current.wrongWordIds.has(w.id))
+                                        .map(word = (
+                                          div key={word.id} 
+                                               onClick={() = speak(word.chinese)}
+                                               className=flex items-center justify-between bg-white p-2 rounded-lg shadow-sm cursor-pointer hoverbg-red-50 transition-colors
+                                          
+                                            span className=font-bold text-lg text-slate-700{word.chinese}span
+                                            div className=text-right
+                                              div className=text-xs text-slate-500 font-mono{word.pinyin}div
+                                              div className=text-xs text-slate-400 font-mono{word.zhuin}div
+                                            div
+                                            Volume2 size={14} className=text-slate-300 ml-2 
+                                          div
+                                        ))
+                                      }
+                                    div
+                                    button 
+                                      type=button
+                                      onClick={retryMistakes}
+                                      className=w-full mt-3 bg-red-500 hoverbg-red-600 text-white py-2 rounded-lg font-bold shadow-sm flex items-center justify-center gap-2 text-sm
+                                    
+                                      Zap size={16} fill=currentColor  只練習錯題
+                                    button
+                                  div
+                                )  (
+                                  gameState === 'victory' && (
+                                    div className=mb-6 bg-green-50 rounded-xl p-4 border border-green-100 text-green-700
+                                      p className=font-bold flex items-center justify-center gap-2
+                                        Star className=fill-green-500 text-green-500 
+                                        太神了！完美無瑕！
+                                      p
+                                    div
+                                  )
+                                )}
+
+                                div className=flex flex-col gap-2
+                                  button 
+                                    type=button
+                                    onClick={() = startGame(selectedLessonId === 'custom'  'custom'  'preset', selectedLessonId === 'custom'  customData  selectedLessonId)} 
+                                    className=w-full bg-sky-500 hoverbg-sky-600 text-white text-lg py-3 rounded-xl font-bold shadow-md flex items-center justify-center gap-2
+                                  
+                                      RotateCcw size={18}  再次挑戰
+                                  button
+                                  button type=button onClick={() = setGameState(prevGameState)} className=w-full bg-white hoverbg-sky-50 border-2 border-sky-200 text-sky-700 text-lg py-3 rounded-xl font-bold flex items-center justify-center gap-2
+                                      {prevGameState === 'menu'  Home size={18}   ArrowLeft size={18} }
+                                      {prevGameState === 'menu'  '回主選單'  '返回上一頁'}
+                                  button
+                                div
+                           
+                        )}
+                     div
+                div
+              )}
+            div
+          );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(ChineseFallingGame );
+    script
+body
+html
