@@ -29,7 +29,7 @@
         // ==========================================================================================
         
         const userProvidedConfig = {
-  apiKey: "AIzaSyCNOqh9IU3WfftExx4bxt50jAN2mcpbJFs",
+              apiKey: "AIzaSyCNOqh9IU3WfftExx4bxt50jAN2mcpbJFs",
   authDomain: "chinese-vocabulary-ae88a.firebaseapp.com",
   projectId: "chinese-vocabulary-ae88a",
   storageBucket: "chinese-vocabulary-ae88a.firebasestorage.app",
@@ -141,6 +141,7 @@
 
     <script type="text/babel">
         const { useState, useEffect, useRef, useCallback } = React;
+        const apiKey = ""; // API Key 會由執行環境自動填入
 
         // --- 內建圖標組件 ---
         const Icon = ({ children, size = 24, className = "", ...props }) => (
@@ -188,6 +189,7 @@
         const ChevronUp = (props) => <Icon {...props}><polyline points="18 15 12 9 6 15" /></Icon>;
         const Trophy2 = (props) => <Icon {...props}><path d="M8 21h8" /><path d="M12 17v4" /><path d="M7 4h10" /><path d="M17 4v4.4a3.6 3.6 0 0 1-3.6 3.6h-2.8A3.6 3.6 0 0 1 7 8.4V4" /><path d="M20 9.72c1.78.36 3.2 1.93 3.2 3.82A3.83 3.83 0 0 1 19.37 17.4" /><path d="M4 9.72C2.22 10.08.8 11.65.8 13.54A3.83 3.83 0 0 0 4.63 17.4" /></Icon>;
         const WifiOff = (props) => <Icon {...props}><line x1="1" y1="1" x2="23" y2="23" /><path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55" /><path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39" /><path d="M10.71 5.05A16 16 0 0 1 22.58 9" /><path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88" /><path d="M8.53 16.11a6 6 0 0 1 6.95 0" /><line x1="12" y1="20" x2="12.01" y2="20" /></Icon>;
+        const ClipboardList = (props) => <Icon {...props}><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M9 12h6"/><path d="M9 16h6"/><path d="M9 8h6"/></Icon>;
 
 
         // --- 預設遊戲資料：分課生詞庫 ---
@@ -201,7 +203,7 @@
           7: { title: "第七課：早一點睡覺", words: [{ id: "7-1", chinese: "別", pinyin: "bié", zhuin: "ㄅㄧㄝˊ" }, { id: "7-2", chinese: "肥皂", pinyin: "féi zào", zhuin: "ㄈㄟˊ ㄗㄠˋ" }, { id: "7-3", chinese: "乾淨", pinyin: "gān jìng", zhuin: "ㄍㄢ ㄐㄧㄥˋ" }, { id: "7-4", chinese: "該", pinyin: "gāi", zhuin: "ㄍㄞ" }, { id: "7-5", chinese: "過", pinyin: "guò", zhuin: "ㄍㄨㄛˋ" }, { id: "7-6", chinese: "趕快", pinyin: "gǎn ㄎㄨㄞˋ" }, { id: "7-7", chinese: "來不及", pinyin: "lái bù jí", zhuin: "ㄌㄞˊ ㄅㄨˋ ㄐㄧˊ" }, { id: "7-8", chinese: "累", pinyin: "lèi", zhuin: "ㄌㄟˋ" }, { id: "7-9", chinese: "起床", pinyin: "qǐ chuáng", zhuin: "ㄑㄧˇ ㄔㄨㄤˊ" }, { id: "7-10", chinese: "刷牙", pinyin: "shuā yá", zhuin: "ㄕㄨㄚ ㄧㄚˊ" }, { id: "7-11", chinese: "睡覺", pinyin: "shuì jiào", zhuin: "ㄕㄨㄟˋ ㄐㄧㄠˋ" }, { id: "7-12", chinese: "晚上", pinyin: "wǎn shàng", zhuin: "ㄨㄢˇ ㄕㄤˋ" }, { id: "7-13", chinese: "忘", pinyin: "wàng", zhuin: "ㄨㄤˋ" }, { id: "7-14", chinese: "洗", pinyin: "xǐ", zhuin: "ㄒㄧˇ" }, { id: "7-15", chinese: "洗澡", pinyin: "xǐ ㄗㄠˇ" }, { id: "7-16", chinese: "洗臉", pinyin: "xǐ ㄌㄧㄢˇ" }, { id: "7-17", chinese: "用", pinyin: "yòng", zhuin: "ㄩㄥˋ" }, { id: "7-18", chinese: "知道", pinyin: "zhī ㄉㄠˋ" }, { id: "7-19", chinese: "昨天", pinyin: "zuó ㄊㄧㄢ" }] },
           8: { title: "第八課：我的寵物", words: [{ id: "8-1", chinese: "不見了", pinyin: "bú jiàn le", zhuin: "ㄅㄨˊ ㄐㄧㄢˋ ㄌㄜ˙" }, { id: "8-2", chinese: "寵物", pinyin: "chǒng wù", zhuin: "ㄔㄨㄥˇ ㄨˋ" }, { id: "8-3", chinese: "帶", pinyin: "dài", zhuin: "ㄉㄞˋ" }, { id: "8-4", chinese: "非常", pinyin: "fēi cháng", zhuin: "ㄈㄟ ㄔㄤˊ" }, { id: "8-5", chinese: "過", pinyin: "guò", zhuin: "ㄍㄨㄛˋ" }, { id: "8-6", chinese: "狗", pinyin: "gǒu", zhuin: "ㄍㄡˇ" }, { id: "8-7", chinese: "可愛", pinyin: "kě ài", zhuin: "ㄎㄜˇ ㄞˋ" }, { id: "8-8", chinese: "貓", pinyin: "māo", zhuin: "ㄇㄠ" }, { id: "8-9", chinese: "去年", pinyin: "qù nián", zhuin: "ㄑㄩˋ ㄋㄧㄢˊ" }, { id: "8-10", chinese: "送給", pinyin: "sòng gěi", zhuin: "ㄙㄨㄥˋ ㄍㄟˇ" }, { id: "8-11", chinese: "上個月", pinyin: "shàng ge yuè", zhuin: "ㄕㄤˋ ㄍㄜ˙ ㄩㄝˋ" }, { id: "8-12", chinese: "牠們", pinyin: "tā men", zhuin: "ㄊㄚ ㄇㄣ˙" }, { id: "8-13", chinese: "兔子", pinyin: "tù zi", zhuin: "ㄊㄨˋ ㄗ˙" }, { id: "8-14", chinese: "餵", pinyin: "wèi", zhuin: "ㄨㄟˋ" }, { id: "8-15", chinese: "養", pinyin: "yǎng", zhuin: "ㄧㄤˇ" }, { id: "8-16", chinese: "隻", pinyin: "zhī", zhuin: "ㄓ" }, { id: "8-17", chinese: "散步", pinyin: "sàn ㄅㄨˋ", zhuin: "ㄙㄢˋ ㄅㄨˋ" }] },
           9: { title: "第九課：音樂教室在北方", words: [{ id: "9-1", chinese: "北方", pinyin: "běi fāng", zhuin: "ㄅㄟˇ ㄈㄤ" }, { id: "9-2", chinese: "還是", pinyin: "hái shì", zhuin: "ㄏㄞˊ ㄕˋ" }, { id: "9-3", chinese: "東方", pinyin: "dōng fāng", zhuin: "ㄉㄨㄥ ㄈㄤ" }, { id: "9-4", chinese: "方向", pinyin: "fāng xiàng", zhuin: "ㄈㄤ ㄒㄧㄤˋ" }, { id: "9-5", chinese: "告訴", pinyin: "gào sù", zhuin: "ㄍㄠˋ ㄙㄨˋ" }, { id: "9-6", chinese: "教室", pinyin: "jiào shì", zhuin: "ㄐㄧㄠˋ ㄕˋ" }, { id: "9-7", chinese: "南方", pinyin: "nán fāng", zhuin: "ㄋㄢˊ ㄈㄤ" }, { id: "9-8", chinese: "所以", pinyin: "suǒ yǐ", zhuin: "ㄙㄨㄛˇ ㄧˇ" }, { id: "9-9", chinese: "它", pinyin: "tā", zhuin: "ㄊㄚ" }, { id: "9-10", chinese: "校門口", pinyin: "xiào mén kǒu", zhuin: "ㄒㄧㄠˋ ㄇㄣˊ ㄎㄡˇ" }, { id: "9-11", chinese: "西方", pinyin: "xī fāng", zhuin: "ㄒㄧ ㄈㄤ" }, { id: "9-12", chinese: "因為", pinyin: "yīn wèi", zhuin: "ㄧㄣ ㄨㄟˋ" }, { id: "9-13", chinese: "足球場", pinyin: "zú qiú chǎng", zhuin: "ㄗㄨˊ ㄑㄧㄡˊ ㄔㄤˇ" }, { id: "9-14", chinese: "指北針", pinyin: "zhǐ běi zhēn", zhuin: "ㄓˇ ㄅㄟˇ ㄓㄣ" }, { id: "9-15", chinese: "指南針", pinyin: "zhǐ nán zhēn", zhuin: "ㄓˇ ㄋㄢˊ ㄓㄣ" }] },
-          10: { title: "第十課：外公、外婆住在臺灣", words: [{ id: "10-1", chinese: "本來", pinyin: "běn lái", zhuin: "ㄅㄣˇ ㄌㄞˊ" }, { id: "10-2", chinese: "法國", pinyin: "Fǎ guó", zhuin: "ㄈㄚˇ ㄍㄨㄛˊ" }, { id: "10-3", chinese: "舅舅", pinyin: "jiù jiu", zhuin: "ㄐㄧㄡˋ ㄐㄧㄡ˙" }, { id: "10-4", chinese: "看", pinyin: "kàn", zhuin: "ㄎㄢˋ" }, { id: "10-5", chinese: "旅行", pinyin: "lǚ xíng", zhuin: "ㄌㄩˇ ㄒㄧㄥˊ" }, { id: "10-6", chinese: "紐約", pinyin: "Niǔ yuē", zhuin: "ㄋㄧㄡˇ ㄩㄝ" }, { id: "10-7", chinese: "臺北", pinyin: "Tái běi", zhuin: "ㄊㄞˊ ㄅㄟˇ" }, { id: "10-8", chinese: "臺南", pinyin: "Tái nán", zhuin: "ㄊㄞˊ ㄋㄢˊ" }, { id: "10-9", chinese: "退休", pinyin: "tuì xiū", zhuin: "ㄊㄨㄟˋ ㄒㄧㄡ" }, { id: "10-10", chinese: "一次", pinyin: "yí cì", zhuin: "ㄧˊ ㄘˋ" }, { id: "10-11", chinese: "住在", pinyin: "zhù zài", zhuin: "ㄓㄨˋ ㄗㄞˋ" }, { id: "10-12", chinese: "暑假", pinyin: "shǔ jià", zhuin: "ㄕㄨˇ ㄐㄧㄚˋ" }] },
+          10: { title: "第十課：外公、外婆住在臺灣", words: [{ id: "10-1", chinese: "本來", pinyin: "běn lái", zhuin: "ㄅㄣˇ ㄌㄞˊ" }, { id: "10-2", chinese: "法國", pinyin: "Fǎ guó", zhuin: "ㄈㄚˇ ㄍㄨㄛˊ" }, { id: "10-3", chinese: "舅舅", pinyin: "jiù jiu", zhuin: "ㄐㄧㄡˋ ㄐㄧㄡ˙" }, { id: "10-4", chinese: "看", pinyin: "kàn", zhuin: "ㄎㄢˋ" }, { id: "10-5", chinese: "旅行", pinyin: "lǚ xíng", zhuin: "ㄌㄩˇ ㄒㄧㄥˊ" }, { id: "10-6", chinese: "紐約", pinyin: "Niǔ ㄩㄝ", zhuin: "ㄋㄧㄡˇ ㄩㄝ" }, { id: "10-7", chinese: "臺北", pinyin: "Tái běi", zhuin: "ㄊㄞˊ ㄅㄟˇ" }, { id: "10-8", chinese: "臺南", pinyin: "Tái nán", zhuin: "ㄊㄞˊ ㄋㄢˊ" }, { id: "10-9", chinese: "退休", pinyin: "tuì xiū", zhuin: "ㄊㄨㄟˋ ㄒㄧㄡ" }, { id: "10-10", chinese: "一次", pinyin: "yí cì", zhuin: "ㄧˊ ㄘˋ" }, { id: "10-11", chinese: "住在", pinyin: "zhù zài", zhuin: "ㄓㄨˋ ㄗㄞˋ" }, { id: "10-12", chinese: "暑假", pinyin: "shǔ jià", zhuin: "ㄕㄨˇ ㄐㄧㄚˋ" }] },
           11: { title: "第十一課：去動物園", words: [{ id: "11-1", chinese: "不但", pinyin: "bú dàn", zhuin: "ㄅㄨˊ ㄉㄢˋ" }, { id: "11-2", chinese: "脖子", pinyin: "bó zi", zhuin: "ㄅㄛˊ ㄗ˙" }, { id: "11-3", chinese: "長頸鹿", pinyin: "cháng jǐng lù", zhuin: "ㄔㄤˊ ㄐㄧㄥˇ ㄌㄨˋ" }, { id: "11-4", chinese: "大象", pinyin: "dà xiàng", zhuin: "ㄉㄚˋ ㄒㄧㄤˋ" }, { id: "11-5", chinese: "動物園", pinyin: "dòng wù yuán", zhuin: "ㄉㄨㄥˋ ㄨˋ ㄩㄢˊ" }, { id: "11-6", chinese: "猴子", pinyin: "hóu zi", zhuin: "ㄏㄡˊ ㄗ˙" }, { id: "11-7", chinese: "看到", pinyin: "kàn dào", zhuin: "ㄎㄢˋ ㄉㄠˋ" }, { id: "11-8", chinese: "老虎", pinyin: "lǎo hǔ", zhuin: "ㄌㄠˇ ㄏㄨˇ" }, { id: "11-9", chinese: "胖", pinyin: "pàng", zhuin: "ㄆㄤˋ" }, { id: "11-10", chinese: "企鵝", pinyin: "qì é", zhuin: "ㄑㄧˋ ㄜˊ" }, { id: "11-11", chinese: "玩", pinyin: "wán", zhuin: "ㄨㄢˊ" }, { id: "11-12", chinese: "熊貓", pinyin: "xióng māo", zhuin: "ㄒㄩㄥˊ ㄇㄠ" }, { id: "11-13", chinese: "希望", pinyin: "xī wàng", zhuin: "ㄒㄧ ㄨㄤˋ" }, { id: "11-14", chinese: "這一次", pinyin: "zhè yí cì", zhuin: "ㄓㄜˋ ㄧˊ ㄘˋ" }, { id: "11-15", chinese: "長", pinyin: "cháng", zhuin: "ㄔㄤˊ" }, { id: "11-16", chinese: "真", pinyin: "zhēn", zhuin: "ㄓㄣ" }] },
           12: { title: "第十二課：打網路電話", words: [{ id: "12-1", chinese: "啊", pinyin: "a", zhuin: "ㄚ˙" }, { id: "12-2", chinese: "過來", pinyin: "guò lái", zhuin: "ㄍㄨㄛˋ ㄌㄞˊ" }, { id: "12-3", chinese: "很久", pinyin: "hěn jiǔ", zhuin: "ㄏㄣˇ ㄐㄧㄡˇ" }, { id: "12-4", chinese: "好好", pinyin: "hǎo hǎo", zhuin: "ㄏㄠˇ ㄏㄠˇ" }, { id: "12-5", chinese: "看起來", pinyin: "kàn qǐ lái", zhuin: "ㄎㄢˋ ㄑㄧˇ ㄌㄞˊ" }, { id: "12-6", chinese: "沒問題", pinyin: "méi wèn tí", zhuin: "ㄇㄟˊ ㄨㄣˋ ㄊㄧˊ" }, { id: "12-7", chinese: "上課", pinyin: "shàng kè", zhuin: "ㄕㄤˋ ㄎㄜˋ" }, { id: "12-8", chinese: "說話", pinyin: "shuō huà", zhuin: "ㄕㄨㄛ ㄏㄨㄚˋ" }, { id: "12-9", chinese: "瘦", pinyin: "shòu", zhuin: "ㄕㄡˋ" }, { id: "12-10", chinese: "網路", pinyin: "wǎng lù", zhuin: "ㄨㄤˇ ㄌㄨˋ" }, { id: "12-11", chinese: "寫", pinyin: "xiě", zhuin: "ㄒㄧㄝˇ" }, { id: "12-12", chinese: "信", pinyin: "xìn", zhuin: "ㄒㄧㄣˋ" }, { id: "12-13", chinese: "有意思", pinyin: "yǒu yì si", zhuin: "ㄧㄡˇ ㄧˋ ㄙ˙" }, { id: "12-14", chinese: "一定", pinyin: "yí dìng", zhuin: "ㄧˊ ㄉㄧㄥˋ" }, { id: "12-15", chinese: "影像", pinyin: "yǐng xiàng", zhuin: "ㄧㄥˇ ㄒㄧㄤˋ" }, { id: "12-16", chinese: "長高", pinyin: "zhǎng gāo", zhuin: "ㄓㄤˇ ㄍㄠ" }, { id: "12-17", chinese: "電話", pinyin: "diàn huà", zhuin: "ㄉㄧㄢˋ ㄏㄨㄚˋ" }] }
         };
@@ -293,8 +295,9 @@
           const [lives, setLives] = useState(5);
           const [options, setOptions] = useState([]); 
           const [targetWordId, setTargetWordId] = useState(null);
+          // Remove state based fallingWords for logic, use only for rendering
           const [fallingWords, setFallingWords] = useState([]); 
-          const [fallingGifts, setFallingGifts] = useState([]); 
+          const [fallingGifts, setFallingGifts] = useState([]); // New state for gifts
           const [hitEffect, setHitEffect] = useState(null);
           const [countdown, setCountdown] = useState(3);
           const [combo, setCombo] = useState(0);
@@ -302,25 +305,34 @@
           const [prevGameState, setPrevGameState] = useState('menu');
           const [shareUrl, setShareUrl] = useState('');
           const [showShareToast, setShowShareToast] = useState(false);
+          
+          // Added: New state for reward (gift box)
           const [isRewardOpened, setIsRewardOpened] = useState(false);
+
+          // Added: New state for player name
           const [playerName, setPlayerName] = useState("");
+
+          // Added: Multiplayer states
           const [user, setUser] = useState(null);
           const [onlinePlayers, setOnlinePlayers] = useState([]);
-          const [isOnlineListOpen, setIsOnlineListOpen] = useState(false);
-          const [allPlayers, setAllPlayers] = useState([]);
+          const [isOnlineListOpen, setIsOnlineListOpen] = useState(false); // Controls visibility of the list
+          const [allPlayers, setAllPlayers] = useState([]); // Persistent leaderboard
+
+          // UI Only States for display
           const [currentStageDisplay, setCurrentStageDisplay] = useState(0);
           const [masteredCountDisplay, setMasteredCountDisplay] = useState(0);
           const [stageGoalDisplay, setStageGoalDisplay] = useState(0);
 
+          // Refs for Game Logic (Sources of Truth)
           const requestRef = useRef();
-          const containerRef = useRef(null); 
+          const containerRef = useRef(null); // Reference for main game container
           const stateRef = useRef({
-            fallingWords: [], 
-            fallingGifts: [], 
+            fallingWords: [], // Array of word objects
+            fallingGifts: [], // Array of gift objects
             isPlaying: false,
             lastTime: 0,
             spawnTimer: 0,
-            giftTimer: 0, 
+            giftTimer: 0, // Timer for gifts
             score: 0,
             currentLessonWords: [],
             title: "",
@@ -329,9 +341,10 @@
             currentStage: 0,
             stageGoals: [],
             combo: 0,
-            highScore: 0 
+            highScore: 0 // Added high score ref
           });
           
+          // Load High Score from Local Storage on mount
            useEffect(() => {
               const savedHighScore = localStorage.getItem('cfg_highScore');
               if (savedHighScore) {
@@ -346,11 +359,12 @@
                   const { auth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } = window.fb;
                   
                   const initAuth = async () => {
+                    // Check for custom token first (if provided by environment)
                     if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
                         try {
                             await signInWithCustomToken(auth, __initial_auth_token);
                         } catch (e) {
-                            console.error("Custom token auth failed", e);
+                            console.error("Custom token auth failed, falling back to anonymous", e);
                             await signInAnonymously(auth);
                         }
                     } else {
@@ -376,6 +390,7 @@
 
               const updateStatus = async () => {
                   try {
+                      // Construct status string
                       let statusText = "在大廳";
                       if (gameState === 'playing') {
                         statusText = `得分: ${stateRef.current.score}`;
@@ -385,6 +400,7 @@
                         statusText = "挑戰失敗";
                       }
                       
+                      // Construct Lesson info
                       let lessonInfo = "選擇中";
                       if (selectedLessonId === 'all') {
                           lessonInfo = "綜合複習";
@@ -394,6 +410,7 @@
                           lessonInfo = `Lesson ${selectedLessonId}`;
                       }
                       
+                      // Check/Update high score
                       if (stateRef.current.score > stateRef.current.highScore) {
                           stateRef.current.highScore = stateRef.current.score;
                           localStorage.setItem('cfg_highScore', stateRef.current.score);
@@ -404,7 +421,7 @@
                           status: statusText,
                           lesson: lessonInfo,
                           score: stateRef.current.score || 0,
-                          highScore: stateRef.current.highScore || 0, 
+                          highScore: stateRef.current.highScore || 0, // Added high score to DB
                           lastSeen: Date.now(),
                           lives: lives
                       }, { merge: true });
@@ -413,15 +430,18 @@
                   }
               };
 
+              // Initial update
               updateStatus();
+
+              // Periodic update (Heartbeat)
               const interval = setInterval(updateStatus, 3000); 
 
               return () => clearInterval(interval);
           }, [user, gameState, score, lives, playerName, selectedLessonId]);
 
-          // Multiplayer: Listen
+          // Multiplayer: Listen to online players & Leaderboard
           useEffect(() => {
-              if (!user || !window.fb) return; 
+              if (!user || !window.fb) return; // Added check for user to fix permission error
               const { db, collection, onSnapshot } = window.fb;
               const q = collection(db, 'artifacts', window.appId, 'public', 'data', 'online_players');
 
@@ -429,11 +449,23 @@
                   const now = Date.now();
                   const allDocs = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
                   
+                  // 1. Online Players (Filtered by lastSeen)
                   const online = allDocs.filter(p => now - p.lastSeen < 60000);
-                  online.sort((a, b) => (b.score || 0) - (a.score || 0)); 
+                  online.sort((a, b) => (b.score || 0) - (a.score || 0)); // Sort by current score for live view
                   setOnlinePlayers(online);
                   
-                  const leaderboard = [...allDocs]; 
+                  // 2. Leaderboard (All time best, sorted by highScore)
+                  // Deduplicate by name for the leaderboard view
+                  const uniqueMap = new Map();
+                  allDocs.forEach(p => {
+                      const name = p.name || "無名大俠";
+                      const score = p.highScore || 0;
+                      // If not in map or new score is higher, update
+                      if (!uniqueMap.has(name) || score > uniqueMap.get(name).highScore) {
+                          uniqueMap.set(name, p);
+                      }
+                  });
+                  const leaderboard = Array.from(uniqueMap.values());
                   leaderboard.sort((a, b) => (b.highScore || 0) - (a.highScore || 0));
                   setAllPlayers(leaderboard);
                   
@@ -442,9 +474,9 @@
               });
 
               return () => unsubscribe();
-          }, [user]);
+          }, [user]); // Added user dependency
 
-          // URL Params
+          // Check URL params on mount
           useEffect(() => {
             const params = new URLSearchParams(window.location.search);
             const lessonParam = params.get('lesson');
@@ -477,54 +509,126 @@
             if ('speechSynthesis' in window) {
               window.speechSynthesis.cancel();
               const utterance = new SpeechSynthesisUtterance(text);
+              
+              // 1. 強制設定語言代碼
               utterance.lang = 'zh-TW';
-              utterance.rate = 0.8; 
+              utterance.rate = 0.8; // 稍微放慢一點，適合教學
+
+              // 2. 強制尋找並指定中文語音包 (解決系統預設為日文的問題)
               const voices = window.speechSynthesis.getVoices();
-              let targetVoice = voices.find(v => v.lang.replace('_', '-').toLowerCase() === 'zh-tw' || v.name.includes('Taiwan'));
-              if (!targetVoice) targetVoice = voices.find(v => v.lang.toLowerCase().startsWith('zh'));
-              if (targetVoice) utterance.voice = targetVoice;
+              
+              // 優先找台灣繁體中文 (zh-TW)
+              let targetVoice = voices.find(v => 
+                  v.lang.replace('_', '-').toLowerCase() === 'zh-tw' || 
+                  v.name.includes('Taiwan')
+              );
+
+              // 找不到則找任意中文 (zh)
+              if (!targetVoice) {
+                  targetVoice = voices.find(v => v.lang.toLowerCase().startsWith('zh'));
+              }
+
+              // 如果有找到中文語音包，就強制指定
+              if (targetVoice) {
+                  utterance.voice = targetVoice;
+              }
+
               window.speechSynthesis.speak(utterance);
             }
           };
 
+          // playSound moved outside
+
           const generateOptions = useCallback((correctWord) => {
             if (!correctWord) return [];
+            
             let pool = stateRef.current.currentLessonWords;
             if (pool.length < 3) {
               pool = [...pool, ...ALL_WORDS_FALLBACK];
             }
-            const distractors = pool.filter(item => item.chinese !== correctWord.chinese).sort(() => 0.5 - Math.random()).slice(0, 2);
-            const newOptions = [{ ...correctWord, isCorrect: true }, ...distractors.map(d => ({ ...d, isCorrect: false, wordId: d.id }))];
+
+            const distractors = pool
+              .filter(item => item.chinese !== correctWord.chinese)
+              .sort(() => 0.5 - Math.random())
+              .slice(0, 2);
+
+            const newOptions = [
+              { ...correctWord, isCorrect: true },
+              ...distractors.map(d => ({ ...d, isCorrect: false, wordId: d.id }))
+            ];
+
             return newOptions.sort(() => 0.5 - Math.random());
           }, []);
 
+          // Updated spawnWord to only update Ref, avoiding conflict with gameLoop render
           const spawnWord = useCallback(() => {
             const { currentLessonWords, masteredWords, fallingWords, currentStage, score } = stateRef.current;
-            const candidates = currentLessonWords.filter(w => !masteredWords.has(w.id) && !fallingWords.some(fw => fw.wordId === w.id));
+
+            const candidates = currentLessonWords.filter(w => 
+              !masteredWords.has(w.id) && 
+              !fallingWords.some(fw => fw.wordId === w.id)
+            );
+
             if (candidates.length === 0) return;
+
             const randomItem = candidates[Math.floor(Math.random() * candidates.length)];
+            
+            // Adjusted range to prevent clipping on left/right edges
+            // Was: Math.random() * (GAME_WIDTH_PCT - 15) + 5;
+            // New: Range from 15% to 85% to accommodate wider words centered at X
             const randomX = Math.random() * 70 + 15; 
+            
+            // Slower stage multiplier (was 0.125, now 0.1 to slow down progression every 3 stages)
             const speedLevel = Math.floor(currentStage / 3);
             const stageMultiplier = 1 + (speedLevel * 0.1); 
+            
             const finalSpeed = Math.min(1.5, FALL_SPEED_BASE * stageMultiplier);
-            const newWord = { id: Date.now() + Math.random(), wordId: randomItem.id, chinese: randomItem.chinese, pinyin: randomItem.pinyin, zhuin: randomItem.zhuin, x: randomX, y: -15, speed: finalSpeed };
+
+            const newWord = {
+              id: Date.now() + Math.random(),
+              wordId: randomItem.id,
+              chinese: randomItem.chinese,
+              pinyin: randomItem.pinyin,
+              zhuin: randomItem.zhuin,
+              x: randomX,
+              y: -15,
+              speed: finalSpeed
+            };
+
+            // Only push to Ref, let loop handle the state update
             stateRef.current.fallingWords.push(newWord);
           }, []);
           
           const spawnGift = useCallback(() => {
+              const { currentStage } = stateRef.current;
+              // 5% chance per 350ms ~ roughly once every 7s on average but random
               if (Math.random() > 0.05) return;
-              const isGold = Math.random() > 0.7; 
+              
+              const isGold = Math.random() > 0.7; // 30% chance for gold
               const randomX = Math.random() * 80 + 10;
-              const speed = isGold ? 0.35 : 0.25; 
-              const newGift = { id: 'gift-' + Date.now() + Math.random(), x: randomX, y: -15, speed: speed, type: isGold ? 'gold' : 'standard', hitsRequired: isGold ? 3 : 1, currentHits: 0 };
+              const speed = isGold ? 0.35 : 0.25; // Gold falls faster
+              
+              const newGift = {
+                  id: 'gift-' + Date.now() + Math.random(),
+                  x: randomX,
+                  y: -15,
+                  speed: speed,
+                  type: isGold ? 'gold' : 'standard',
+                  hitsRequired: isGold ? 3 : 1,
+                  currentHits: 0
+              };
+              
               stateRef.current.fallingGifts.push(newGift);
           }, []);
 
           const endStage = (stageIndex) => {
             stateRef.current.isPlaying = false;
             if (requestRef.current) cancelAnimationFrame(requestRef.current);
+            
             const goals = stateRef.current.stageGoals;
             if (stageIndex >= goals.length - 1) {
+              // Changed: Do NOT play victory sound yet
+              // Reset opened state for the new victory
               setIsRewardOpened(false); 
               setGameState('victory');
             } else {
@@ -534,143 +638,519 @@
 
           const gameLoop = useCallback((time) => {
             if (!stateRef.current.isPlaying) return;
-            if (stateRef.current.lastTime === 0) { stateRef.current.lastTime = time; stateRef.current.spawnTimer = time; stateRef.current.giftTimer = time; }
+
+            if (stateRef.current.lastTime === 0) {
+              stateRef.current.lastTime = time;
+              stateRef.current.spawnTimer = time;
+              stateRef.current.giftTimer = time;
+            }
+
             let deltaTime = time - stateRef.current.lastTime;
             if (deltaTime > 100) deltaTime = 16;
+            
             stateRef.current.lastTime = time;
 
             const { currentStage, score, fallingWords: currentFallingWords } = stateRef.current;
+            
+            // Slower spawn rate increase
             const speedLevel = Math.floor(currentStage / 3);
-            const stageRateMod = speedLevel * 100; 
-            let currentRate = Math.max(1200, SPAWN_RATE - (score * 1) - stageRateMod); 
-            if (currentFallingWords.length === 0) currentRate = 500;
+            const stageRateMod = speedLevel * 100; // Reduce 100ms every 3 stages
+            let currentRate = Math.max(1200, SPAWN_RATE - (score * 1) - stageRateMod); // Min 1.2s
+            
+            if (currentFallingWords.length === 0) {
+              currentRate = 500;
+            }
 
-            if (time - stateRef.current.spawnTimer > currentRate) { spawnWord(); stateRef.current.spawnTimer = time; }
-            if (time - stateRef.current.giftTimer > GIFT_SPAWN_INTERVAL) { spawnGift(); stateRef.current.giftTimer = time; }
+            // Word Spawn Logic
+            if (time - stateRef.current.spawnTimer > currentRate) {
+              spawnWord();
+              stateRef.current.spawnTimer = time;
+            }
+            
+            // Gift Spawn Logic
+            if (time - stateRef.current.giftTimer > GIFT_SPAWN_INTERVAL) {
+               spawnGift();
+               stateRef.current.giftTimer = time;
+            }
 
             let nextWords = [];
             let livesLostCount = 0;
             let lowestWord = null;
             let maxY = -100;
 
+            // IMMUTABLE UPDATE PATTERN: Create new objects for moved words
             stateRef.current.fallingWords.forEach(word => {
+              // Calculate new Y position
               const newY = word.y + word.speed * (deltaTime / 16);
-              if (newY > maxY) { maxY = newY; lowestWord = word; }
-              if (newY > 78) { livesLostCount++; stateRef.current.wrongWordIds.add(word.wordId); } else { nextWords.push({ ...word, y: newY }); }
+
+              if (newY > maxY) {
+                maxY = newY;
+                lowestWord = word;
+              }
+
+              if (newY > 78) {
+                livesLostCount++;
+                stateRef.current.wrongWordIds.add(word.wordId);
+              } else {
+                // Create NEW object to force React to re-render
+                nextWords.push({ ...word, y: newY });
+              }
             });
             
+            // Gift Movement
             let nextGifts = [];
             stateRef.current.fallingGifts.forEach(gift => {
                 const newY = gift.y + gift.speed * (deltaTime / 16);
-                if (newY <= 100) nextGifts.push({ ...gift, y: newY });
+                if (newY <= 100) {
+                    nextGifts.push({ ...gift, y: newY });
+                }
             });
             stateRef.current.fallingGifts = nextGifts;
-            setFallingGifts(nextGifts);
+            setFallingGifts(nextGifts); // Render gifts
 
             stateRef.current.fallingWords = nextWords;
-            setTargetWordId(prevId => { if (!lowestWord) return null; if (lowestWord.id !== prevId) { setOptions(generateOptions(lowestWord)); return lowestWord.id; } return prevId; });
+            
+            setTargetWordId(prevId => {
+                if (!lowestWord) return null;
+                if (lowestWord.id !== prevId) {
+                    setOptions(generateOptions(lowestWord));
+                    return lowestWord.id;
+                }
+                return prevId;
+            });
+
+            // Sync to React State for Render
             setFallingWords(nextWords);
 
             if (livesLostCount > 0) {
-              playSound('error'); 
-              setBottomWarn(true); setTimeout(() => setBottomWarn(false), 300);
+              playSound('error'); // Added sound on drop
+              setBottomWarn(true);
+              setTimeout(() => setBottomWarn(false), 300);
+
               stateRef.current.spawnTimer = time - currentRate + 100;
-              stateRef.current.combo = 0; setCombo(0);
-              setLives(prev => { const newLives = prev - livesLostCount; if (newLives <= 0) { stateRef.current.isPlaying = false; setGameState('gameover'); return 0; } return newLives; });
+
+              stateRef.current.combo = 0;
+              setCombo(0);
+
+              setLives(prev => {
+                const newLives = prev - livesLostCount;
+                if (newLives <= 0) {
+                  stateRef.current.isPlaying = false;
+                  setGameState('gameover');
+                  return 0;
+                }
+                return newLives;
+              });
             }
 
-            if (stateRef.current.isPlaying) requestRef.current = requestAnimationFrame(gameLoop);
+            if (stateRef.current.isPlaying) {
+                requestRef.current = requestAnimationFrame(gameLoop);
+            }
           }, [generateOptions, spawnWord, spawnGift]);
 
           const handleOptionClick = (option) => {
             speak(option.chinese);
+
             if (!targetWordId) return;
+
             const targetWord = stateRef.current.fallingWords.find(w => w.id === targetWordId);
-            if (!targetWord) return;
+            
+            // Add safety check
+            if (!targetWord) {
+                return;
+            }
             
             if (targetWord && (option.wordId === targetWord.wordId || option.chinese === targetWord.chinese)) {
+              // CORRECT
               playSound('correct');
-              setHitEffect({ x: targetWord.x, y: targetWord.y, value: `+${10 + Math.floor(stateRef.current.combo / 5) * 5 + Math.max(0, Math.floor((80 - targetWord.y) * 0.5))}` });
+              setHitEffect({ x: targetWord.x, y: targetWord.y, value: `+${10 + Math.floor(stateRef.current.combo / 5) * 5 + Math.max(0, Math.floor((80 - targetWord.y) * 0.5))}` }); // Store value in hitEffect
               setTimeout(() => setHitEffect(null), 500);
+
               const nextWords = stateRef.current.fallingWords.filter(w => w.id !== targetWordId);
-              stateRef.current.fallingWords = nextWords; setFallingWords(nextWords); 
-              stateRef.current.masteredWords.add(targetWord.wordId); setMasteredCountDisplay(stateRef.current.masteredWords.size);
-              const newCombo = stateRef.current.combo + 1; stateRef.current.combo = newCombo; setCombo(newCombo);
+              stateRef.current.fallingWords = nextWords;
+              setFallingWords(nextWords); 
+              
+              stateRef.current.masteredWords.add(targetWord.wordId);
+              setMasteredCountDisplay(stateRef.current.masteredWords.size);
+
+              // Combo Logic
+              const newCombo = stateRef.current.combo + 1;
+              stateRef.current.combo = newCombo;
+              setCombo(newCombo);
+
               const comboBonus = Math.floor(newCombo / 5) * 5; 
+              // Speed Bonus
               const speedBonus = Math.max(0, Math.floor((80 - targetWord.y) * 0.5));
-              setScore(s => { const newScore = s + 10 + comboBonus + speedBonus; stateRef.current.score = newScore; return newScore; });
+
+              setScore(s => {
+                  const newScore = s + 10 + comboBonus + speedBonus;
+                  stateRef.current.score = newScore;
+                  return newScore;
+              });
+
               const { masteredWords, currentStage, stageGoals } = stateRef.current;
-              if (masteredWords.size >= stageGoals[currentStage]) endStage(currentStage);
+              if (masteredWords.size >= stageGoals[currentStage]) {
+                 endStage(currentStage);
+              }
+
             } else {
-              playSound('error'); stateRef.current.combo = 0; setCombo(0);
+              // WRONG
+              playSound('error');
+              stateRef.current.combo = 0;
+              setCombo(0);
+              
               stateRef.current.wrongWordIds.add(targetWord.wordId);
+              
               const container = containerRef.current;
-              if (container) { container.classList.add('animate-shake'); setTimeout(() => container.classList.remove('animate-shake'), 200); }
+              if (container) {
+                container.classList.add('animate-shake');
+                setTimeout(() => container.classList.remove('animate-shake'), 200); 
+              }
             }
           };
           
           const handleGiftClick = (giftId, e) => {
-              e.stopPropagation();
+              e.stopPropagation(); // Prevent hitting underlying elements
+              
+              // Find the gift in the ref (source of truth)
               const giftIndex = stateRef.current.fallingGifts.findIndex(g => g.id === giftId);
               if (giftIndex === -1) return;
+              
               const gift = stateRef.current.fallingGifts[giftIndex];
               gift.currentHits += 1;
+              
               playSound('click');
+              
               if (gift.currentHits >= gift.hitsRequired) {
+                  // Gift collected
                   const points = gift.type === 'gold' ? 200 : 50;
-                  setScore(s => { const newScore = s + points; stateRef.current.score = newScore; return newScore; });
-                  playSound('gift'); setHitEffect({ x: gift.x, y: gift.y, value: `+${points}`, isGift: true });
+                  setScore(s => {
+                      const newScore = s + points;
+                      stateRef.current.score = newScore;
+                      return newScore;
+                  });
+                  playSound('gift');
+                  setHitEffect({ x: gift.x, y: gift.y, value: `+${points}`, isGift: true }); // Special gift effect
                   setTimeout(() => setHitEffect(null), 800);
+                  
+                  // Remove from ref
                   stateRef.current.fallingGifts.splice(giftIndex, 1);
+              } else {
+                  // Visual feedback for hit
+                  // We rely on re-render in gameLoop for position, but for scale effect we might need local state or CSS class
+                  // Since we are rerendering 60fps, we can just add a 'hit' property to skip a frame or shake
+                  // For simplicity in this structure, just the sound and maybe a small particle
               }
+              // Force update state to reflect hit count
               setFallingGifts([...stateRef.current.fallingGifts]);
           };
 
-          const startCountdown = () => { setCountdown(3); setGameState('countdown'); };
+          const startCountdown = () => {
+            setCountdown(3);
+            setGameState('countdown');
+          };
 
           useEffect(() => {
             if (gameState === 'countdown') {
-              if (countdown > 0) { const timer = setTimeout(() => setCountdown(c => c - 1), 1000); return () => clearTimeout(timer); } 
-              else { setGameState('playing'); stateRef.current.isPlaying = true; stateRef.current.lastTime = 0; stateRef.current.spawnTimer = 0; requestRef.current = requestAnimationFrame(gameLoop); }
+              if (countdown > 0) {
+                const timer = setTimeout(() => setCountdown(c => c - 1), 1000);
+                return () => clearTimeout(timer);
+              } else {
+                setGameState('playing');
+                stateRef.current.isPlaying = true;
+                stateRef.current.lastTime = 0;
+                stateRef.current.spawnTimer = 0;
+                requestRef.current = requestAnimationFrame(gameLoop);
+              }
             }
           }, [gameState, countdown, gameLoop]);
 
+          // Pause Logic
           const togglePause = () => {
-            if (gameState === 'playing') { stateRef.current.isPlaying = false; if (requestRef.current) cancelAnimationFrame(requestRef.current); setGameState('paused'); }
-            else if (gameState === 'paused') { setGameState('countdown'); setCountdown(3); }
+            if (gameState === 'playing') {
+              stateRef.current.isPlaying = false;
+              if (requestRef.current) cancelAnimationFrame(requestRef.current);
+              setGameState('paused');
+            } else if (gameState === 'paused') {
+              setGameState('countdown'); // Resume with countdown
+              setCountdown(3);
+            }
           };
 
-          const exitFromPause = () => { stateRef.current.isPlaying = false; setGameState('menu'); };
+          const exitFromPause = () => {
+            stateRef.current.isPlaying = false;
+            setGameState('menu');
+          };
 
           const restartFromPause = () => {
+            // Restart current level
             const { currentLessonWords, title } = stateRef.current;
+            
+            // Recalculate goals logic (same as startGame)
             const totalWords = currentLessonWords.length;
             let goals = [];
-            if (totalWords > 30) { const chunkSize = 15; for (let count = chunkSize; count < totalWords; count += chunkSize) { goals.push(count); } goals.push(totalWords); } 
-            else { if (totalWords < 8) { goals = [totalWords]; } else if (totalWords < 15) { goals = [Math.ceil(totalWords * 0.4), totalWords]; } else { goals = [Math.ceil(totalWords * 0.3), Math.ceil(totalWords * 0.65), totalWords]; } }
+            if (totalWords > 30) {
+                const chunkSize = 15;
+                for (let count = chunkSize; count < totalWords; count += chunkSize) {
+                    goals.push(count);
+                }
+                goals.push(totalWords);
+            } else {
+                if (totalWords < 8) {
+                    goals = [totalWords];
+                } else if (totalWords < 15) {
+                    goals = [Math.ceil(totalWords * 0.4), totalWords];
+                } else {
+                    goals = [Math.ceil(totalWords * 0.3), Math.ceil(totalWords * 0.65), totalWords];
+                }
+            }
 
-            setScore(0); setLives(5); setCombo(0); setFallingWords([]); setFallingGifts([]); setTargetWordId(null); setOptions([]); setCurrentStageDisplay(0); setMasteredCountDisplay(0); setStageGoalDisplay(goals[0]);
+            setScore(0);
+            setLives(5);
+            setCombo(0);
+            setFallingWords([]);
+            setFallingGifts([]);
+            setTargetWordId(null);
+            setOptions([]);
+            setCurrentStageDisplay(0);
+            setMasteredCountDisplay(0);
+            setStageGoalDisplay(goals[0]);
 
-            stateRef.current = { fallingWords: [], fallingGifts: [], isPlaying: false, lastTime: 0, spawnTimer: 0, giftTimer: 0, score: 0, currentLessonWords: currentLessonWords, title: title, masteredWords: new Set(), wrongWordIds: new Set(), currentStage: 0, stageGoals: goals, combo: 0, highScore: stateRef.current.highScore };
+            stateRef.current = {
+              fallingWords: [],
+              fallingGifts: [],
+              isPlaying: false,
+              lastTime: 0,
+              spawnTimer: 0,
+              giftTimer: 0,
+              score: 0,
+              currentLessonWords: currentLessonWords,
+              title: title,
+              masteredWords: new Set(),
+              wrongWordIds: new Set(),
+              currentStage: 0,
+              stageGoals: goals,
+              combo: 0,
+              highScore: stateRef.current.highScore // preserve high score
+            };
+
             startCountdown();
           };
 
-          useEffect(() => { if (gameState !== 'victory' || !isRewardOpened) return; const canvas = document.getElementById('confetti-canvas'); if (!canvas) return; const ctx = canvas.getContext('2d'); const particles = []; const colors = ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3', '#03a9f4', '#00bcd4', '#009688', '#4caf50', '#8bc34a', '#cddc39', '#ffeb3b', '#ffc107', '#ff9800', '#ff5722']; const createParticle = () => { return { x: Math.random() * canvas.width, y: Math.random() * canvas.height - canvas.height, color: colors[Math.floor(Math.random() * colors.length)], size: Math.random() * 10 + 5, speed: Math.random() * 5 + 2, angle: Math.random() * 360, spin: Math.random() < 0.5 ? -1 : 1 }; }; for (let i = 0; i < 150; i++) { particles.push(createParticle()); } const animate = () => { if (gameState !== 'victory') return; ctx.clearRect(0, 0, canvas.width, canvas.height); particles.forEach((p, i) => { p.y += p.speed; p.angle += p.spin; ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.angle * Math.PI / 180); ctx.fillStyle = p.color; ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size); ctx.restore(); if (p.y > canvas.height) { particles[i] = createParticle(); particles[i].y = -10; } }); requestAnimationFrame(animate); }; animate(); }, [gameState, isRewardOpened]);
+          // Confetti Loop - Modified to check isRewardOpened
+          useEffect(() => {
+            if (gameState !== 'victory' || !isRewardOpened) return;
+            
+            const canvas = document.getElementById('confetti-canvas');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            const particles = [];
+            const colors = ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3', '#03a9f4', '#00bcd4', '#009688', '#4caf50', '#8bc34a', '#cddc39', '#ffeb3b', '#ffc107', '#ff9800', '#ff5722'];
+            
+            const createParticle = () => {
+                return {
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height - canvas.height,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    size: Math.random() * 10 + 5,
+                    speed: Math.random() * 5 + 2,
+                    angle: Math.random() * 360,
+                    spin: Math.random() < 0.5 ? -1 : 1
+                };
+            };
 
-          const nextStage = () => { const nextStageIdx = stateRef.current.currentStage + 1; stateRef.current.currentStage = nextStageIdx; stateRef.current.fallingWords = []; setCurrentStageDisplay(nextStageIdx); setStageGoalDisplay(stateRef.current.stageGoals[nextStageIdx]); setFallingWords([]); startCountdown(); };
+            // Fill initial particles
+            for (let i = 0; i < 150; i++) {
+                particles.push(createParticle());
+            }
 
-          const handleKeyDown = useCallback((e) => { if (gameState !== 'playing') return; if (e.key === '1' && options[0]) handleOptionClick(options[0]); if (e.key === '2' && options[1]) handleOptionClick(options[1]); if (e.key === '3' && options[2]) handleOptionClick(options[2]); }, [gameState, options, targetWordId]);
-          useEffect(() => { window.addEventListener('keydown', handleKeyDown); return () => window.removeEventListener('keydown', handleKeyDown); }, [handleKeyDown]);
+            const animate = () => {
+                if (gameState !== 'victory') return;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                particles.forEach((p, i) => {
+                    p.y += p.speed;
+                    p.angle += p.spin;
+                    
+                    ctx.save();
+                    ctx.translate(p.x, p.y);
+                    ctx.rotate(p.angle * Math.PI / 180);
+                    ctx.fillStyle = p.color;
+                    ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+                    ctx.restore();
 
-          const handleOpenReward = () => { setIsRewardOpened(true); playSound('victory'); };
+                    if (p.y > canvas.height) {
+                        particles[i] = createParticle();
+                        particles[i].y = -10;
+                    }
+                });
+                
+                requestAnimationFrame(animate);
+            };
 
-          const startGame = (type, idOrData, fromState = undefined) => { if (requestRef.current) cancelAnimationFrame(requestRef.current); if (fromState) setPrevGameState(fromState); let wordsPool = []; let lessonTitle = ""; if (type === 'preset') { if (idOrData === 'all') { wordsPool = ALL_WORDS_FALLBACK; lessonTitle = "綜合複習"; setSelectedLessonId('all'); } else { if (!DEFAULT_LESSON_DATA[idOrData]) return; wordsPool = DEFAULT_LESSON_DATA[idOrData].words; lessonTitle = DEFAULT_LESSON_DATA[idOrData].title.split('：')[1]; setSelectedLessonId(idOrData); } } else if (type === 'custom') { if (!idOrData || idOrData.length === 0) { alert("請輸入至少一個生詞"); return; } wordsPool = idOrData; lessonTitle = "自訂題庫"; setSelectedLessonId('custom'); } const totalWords = wordsPool.length; let goals = []; if (totalWords > 30) { const chunkSize = 15; for (let count = chunkSize; count < totalWords; count += chunkSize) { goals.push(count); } goals.push(totalWords); } else { if (totalWords < 8) { goals = [totalWords]; } else if (totalWords < 15) { goals = [Math.ceil(totalWords * 0.4), totalWords]; } else { goals = [Math.ceil(totalWords * 0.3), Math.ceil(totalWords * 0.65), totalWords]; } } setScore(0); setLives(5); setCombo(0); setFallingWords([]); setFallingGifts([]); setTargetWordId(null); setOptions([]); setCurrentStageDisplay(0); setMasteredCountDisplay(0); setStageGoalDisplay(goals[0]); stateRef.current = { fallingWords: [], fallingGifts: [], isPlaying: false, lastTime: 0, spawnTimer: 0, giftTimer: 0, score: 0, currentLessonWords: currentLessonWords, title: lessonTitle, masteredWords: new Set(), wrongWordIds: new Set(), currentStage: 0, stageGoals: goals, combo: 0, highScore: stateRef.current.highScore }; startCountdown(); };
+            animate();
 
-          const retryMistakes = () => { const wrongWords = stateRef.current.currentLessonWords.filter(w => stateRef.current.wrongWordIds.has(w.id)); if (wrongWords.length === 0) return; setCustomData(wrongWords); startGame('custom', wrongWords); };
+          }, [gameState, isRewardOpened]);
+
+          const nextStage = () => {
+            const nextStageIdx = stateRef.current.currentStage + 1;
+            stateRef.current.currentStage = nextStageIdx;
+            stateRef.current.fallingWords = [];
+            setCurrentStageDisplay(nextStageIdx);
+            setStageGoalDisplay(stateRef.current.stageGoals[nextStageIdx]);
+            setFallingWords([]);
+            startCountdown();
+          };
+
+          const handleKeyDown = useCallback((e) => {
+            if (gameState !== 'playing') return;
+            if (e.key === '1' && options[0]) handleOptionClick(options[0]);
+            if (e.key === '2' && options[1]) handleOptionClick(options[1]);
+            if (e.key === '3' && options[2]) handleOptionClick(options[2]);
+          }, [gameState, options, targetWordId]);
+
+          useEffect(() => {
+            window.addEventListener('keydown', handleKeyDown);
+            return () => window.removeEventListener('keydown', handleKeyDown);
+          }, [handleKeyDown]);
+
+          // New function to handle opening the reward
+          const handleOpenReward = () => {
+            setIsRewardOpened(true);
+            playSound('victory');
+          };
+
+          const startGame = (type, idOrData, fromState = undefined) => {
+            if (requestRef.current) {
+              cancelAnimationFrame(requestRef.current);
+            }
+
+            // Update prevGameState if fromState is provided (not retry)
+            if (fromState) {
+                setPrevGameState(fromState);
+            }
+
+            let wordsPool = [];
+            let lessonTitle = "";
+
+            if (type === 'preset') {
+              if (idOrData === 'all') {
+                wordsPool = ALL_WORDS_FALLBACK;
+                lessonTitle = "綜合複習";
+                setSelectedLessonId('all');
+              } else {
+                if (!DEFAULT_LESSON_DATA[idOrData]) {
+                    console.error("Invalid lesson ID:", idOrData);
+                    return;
+                }
+                wordsPool = DEFAULT_LESSON_DATA[idOrData].words;
+                lessonTitle = DEFAULT_LESSON_DATA[idOrData].title.split('：')[1];
+                setSelectedLessonId(idOrData);
+              }
+            } else if (type === 'custom') {
+              if (!idOrData || idOrData.length === 0) {
+                alert("請輸入至少一個生詞");
+                return;
+              }
+              wordsPool = idOrData;
+              lessonTitle = "自訂題庫";
+              setSelectedLessonId('custom');
+            }
+
+            const totalWords = wordsPool.length;
+            let goals = [];
+            if (totalWords > 30) {
+                const chunkSize = 15;
+                for (let count = chunkSize; count < totalWords; count += chunkSize) {
+                    goals.push(count);
+                }
+                goals.push(totalWords);
+            } else {
+                if (totalWords < 8) {
+                    goals = [totalWords];
+                } else if (totalWords < 15) {
+                    goals = [Math.ceil(totalWords * 0.4), totalWords];
+                } else {
+                    goals = [Math.ceil(totalWords * 0.3), Math.ceil(totalWords * 0.65), totalWords];
+                }
+            }
+
+            setScore(0);
+            setLives(5);
+            setCombo(0);
+            setFallingWords([]);
+            setFallingGifts([]); // Reset gifts
+            setTargetWordId(null);
+            setOptions([]);
+            setCurrentStageDisplay(0);
+            setMasteredCountDisplay(0);
+            setStageGoalDisplay(goals[0]);
+
+            stateRef.current = {
+              fallingWords: [],
+              fallingGifts: [],
+              isPlaying: false, 
+              lastTime: 0,
+              spawnTimer: 0,
+              giftTimer: 0,
+              score: 0,
+              currentLessonWords: wordsPool,
+              title: lessonTitle,
+              masteredWords: new Set(),
+              wrongWordIds: new Set(),
+              currentStage: 0,
+              stageGoals: goals,
+              combo: 0,
+              highScore: stateRef.current.highScore // preserve high score
+            };
+
+            startCountdown();
+          };
+
+          const retryMistakes = () => {
+            const wrongWords = stateRef.current.currentLessonWords.filter(w => stateRef.current.wrongWordIds.has(w.id));
+            if (wrongWords.length === 0) return;
+            setCustomData(wrongWords);
+            startGame('custom', wrongWords);
+          };
           
-          const handleCopyLink = (lessonId) => { const url = new URL(window.location.href); url.searchParams.set('lesson', lessonId); const text = url.toString(); const textArea = document.createElement("textarea"); textArea.value = text; textArea.style.position = "fixed"; textArea.style.left = "-9999px"; textArea.style.top = "0"; document.body.appendChild(textArea); textArea.focus(); textArea.select(); try { const successful = document.execCommand('copy'); if(successful) { setShowShareToast(true); setTimeout(() => setShowShareToast(false), 2000); } } catch (err) { console.error('Copy failed', err); } document.body.removeChild(textArea); };
+          const handleCopyLink = (lessonId) => {
+             const url = new URL(window.location.href);
+             url.searchParams.set('lesson', lessonId);
+             const text = url.toString();
+             
+             // Create temporary element
+             const textArea = document.createElement("textarea");
+             textArea.value = text;
+             
+             // Ensure it's not visible but part of DOM
+             textArea.style.position = "fixed";
+             textArea.style.left = "-9999px";
+             textArea.style.top = "0";
+             document.body.appendChild(textArea);
+             
+             textArea.focus();
+             textArea.select();
+             
+             try {
+                const successful = document.execCommand('copy');
+                if(successful) {
+                    setShowShareToast(true);
+                    setTimeout(() => setShowShareToast(false), 2000);
+                }
+             } catch (err) {
+                console.error('Copy failed', err);
+             }
+             
+             document.body.removeChild(textArea);
+          };
 
-          useEffect(() => { return () => { if (requestRef.current) cancelAnimationFrame(requestRef.current); }; }, []);
+          useEffect(() => {
+            return () => {
+                if (requestRef.current) cancelAnimationFrame(requestRef.current);
+            };
+          }, []);
 
           return (
             <div ref={containerRef} id="game-container" className="h-[100dvh] w-full bg-sky-900 text-white font-sans overflow-hidden relative selection:bg-none flex flex-col">
@@ -681,80 +1161,277 @@
                 <div className="absolute top-32 right-32 w-20 h-8 bg-white/10 rounded-full blur-xl"></div>
               </div>
               
-              {showShareToast && <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-black/80 text-white px-4 py-2 rounded-full shadow-lg z-[100] animate-fade-in-up">已複製課程連結！</div>}
-              {gameState === 'victory' && isRewardOpened && <canvas id="confetti-canvas" width={window.innerWidth} height={window.innerHeight} className="absolute inset-0 z-[60] pointer-events-none" />}
+              {/* Toast Notification */}
+              {showShareToast && (
+                <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-black/80 text-white px-4 py-2 rounded-full shadow-lg z-[100] animate-fade-in-up">
+                  已複製課程連結！
+                </div>
+              )}
 
+              {gameState === 'victory' && isRewardOpened && (
+                <canvas 
+                    id="confetti-canvas"
+                    width={window.innerWidth} 
+                    height={window.innerHeight} 
+                    className="absolute inset-0 z-[60] pointer-events-none"
+                />
+              )}
+              
+              {/* Leaderboard View (Standalone) */}
+              {gameState === 'leaderboardView' && (
+                <div className="absolute inset-0 flex flex-col z-50 bg-sky-900 overflow-y-auto">
+                    <div className="p-4 max-w-lg mx-auto w-full h-full flex flex-col">
+                        <button onClick={() => setGameState('menu')} className="flex items-center gap-1 text-sky-300 mb-4 hover:text-white shrink-0">
+                            <ArrowLeft size={20} /> 返回主選單
+                        </button>
+                        <h2 className="text-2xl font-bold text-white mb-4 text-center flex items-center justify-center gap-2">
+                            <Trophy2 size={28} className="text-yellow-400" />
+                            歷史風雲榜 (All Time Ranking)
+                        </h2>
+                        
+                        <div className="flex-1 overflow-y-auto custom-scrollbar bg-black/20 rounded-xl p-4 border border-white/10">
+                            {allPlayers.length === 0 ? (
+                                <p className="text-center text-gray-400 py-8">
+                                    {window.fb?.isOfflineMode ? "單機模式下僅記錄本機分數" : "尚無排行資料"}
+                                </p>
+                            ) : (
+                                <div className="space-y-3">
+                                    {allPlayers.map((p, idx) => (
+                                        <div key={p.id} className={`bg-white/10 p-4 rounded-xl flex items-center justify-between border border-white/5 ${idx < 3 ? 'border-yellow-500/50 bg-yellow-500/10' : ''}`}>
+                                            <div className="flex items-center gap-4">
+                                                <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-lg ${idx === 0 ? 'bg-yellow-400 text-yellow-900' : idx === 1 ? 'bg-gray-300 text-gray-800' : idx === 2 ? 'bg-amber-600 text-amber-100' : 'bg-white/20 text-white'}`}>
+                                                    {idx + 1}
+                                                </div>
+                                                <div>
+                                                    <div className="font-bold text-lg text-white">{p.name || "無名大俠"}</div>
+                                                    <div className="text-xs text-sky-300">{p.lesson || "未知課程"}</div>
+                                                </div>
+                                            </div>
+                                            <div className="text-right">
+                                                <div className="text-2xl font-bold text-yellow-400">{p.highScore || 0}</div>
+                                                <div className="text-xs text-gray-400">最高分</div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+              )}
+
+              {/* Pause Menu Overlay */}
               {gameState === 'paused' && (
                 <div className="absolute inset-0 flex items-center justify-center z-50 bg-sky-900/60 backdrop-blur-md">
                   <div className="bg-white text-sky-900 p-8 rounded-3xl shadow-2xl max-w-sm w-full text-center border-4 border-sky-200 animate-fade-in-up">
-                    <h2 className="text-3xl font-bold mb-6 text-sky-800 flex items-center justify-center gap-2"><Pause size={32} /> 遊戲暫停</h2>
+                    <h2 className="text-3xl font-bold mb-6 text-sky-800 flex items-center justify-center gap-2">
+                      <Pause size={32} /> 遊戲暫停
+                    </h2>
+                    
                     <div className="flex flex-col gap-3">
-                      <button onClick={togglePause} className="w-full bg-green-500 hover:bg-green-600 text-white text-xl py-4 rounded-xl font-bold shadow-lg flex items-center justify-center gap-2"><PlayCircle size={24} fill="currentColor" /> 繼續遊戲</button>
-                      <button onClick={restartFromPause} className="w-full bg-sky-500 hover:bg-sky-600 text-white text-lg py-3 rounded-xl font-bold shadow-md flex items-center justify-center gap-2"><RotateCcw size={20} /> 重新開始</button>
-                      <button onClick={exitFromPause} className="w-full bg-white hover:bg-gray-50 border-2 border-gray-200 text-gray-600 text-lg py-3 rounded-xl font-bold flex items-center justify-center gap-2">{prevGameState === 'menu' ? <Home size={20} /> : <ArrowLeft size={20} />} {prevGameState === 'menu' ? '回主選單' : '返回上一頁'}</button>
+                      <button 
+                        onClick={togglePause}
+                        className="w-full bg-green-500 hover:bg-green-600 text-white text-xl py-4 rounded-xl font-bold shadow-lg flex items-center justify-center gap-2"
+                      >
+                        <PlayCircle size={24} fill="currentColor" /> 繼續遊戲
+                      </button>
+                      
+                      <button 
+                        onClick={restartFromPause}
+                        className="w-full bg-sky-500 hover:bg-sky-600 text-white text-lg py-3 rounded-xl font-bold shadow-md flex items-center justify-center gap-2"
+                      >
+                        <RotateCcw size={20} /> 重新開始
+                      </button>
+                      
+                      <button 
+                        onClick={exitFromPause}
+                        className="w-full bg-white hover:bg-gray-50 border-2 border-gray-200 text-gray-600 text-lg py-3 rounded-xl font-bold flex items-center justify-center gap-2"
+                      >
+                        {prevGameState === 'menu' ? <Home size={20} /> : <ArrowLeft size={20} />}
+                        {prevGameState === 'menu' ? '回主選單' : '返回上一頁'}
+                      </button>
                     </div>
                   </div>
                 </div>
               )}
 
+              {/* Menu Screen */}
               {gameState === 'menu' && (
                 <div className="absolute inset-0 flex flex-col items-center justify-center z-50 bg-sky-950/80 backdrop-blur-sm p-4">
                    <div className="bg-white text-sky-900 p-8 rounded-3xl shadow-2xl max-w-sm w-full text-center border-4 border-sky-200">
-                      <div className="w-20 h-20 bg-sky-500 rounded-full flex items-center justify-center mx-auto mb-6 text-white shadow-lg"><Volume2 size={40} /></div>
+                      <div className="w-20 h-20 bg-sky-500 rounded-full flex items-center justify-center mx-auto mb-6 text-white shadow-lg">
+                          <Volume2 size={40} />
+                      </div>
                       <h1 className="text-3xl font-bold mb-2 text-sky-800">生詞特訓班</h1>
                       <p className="text-sky-600 mb-2 font-medium">學華語向前走 第二冊</p>
-                      <div className="bg-yellow-100/50 p-2 rounded-lg text-xs text-yellow-800 mb-4 font-bold border border-yellow-200">💡 玩法提示：消除生詞，並點擊掉落的禮物來得分！</div>
-                      <div className="mb-4 w-full px-4">
-                        <label className="block text-sky-300 text-sm font-bold mb-1 text-left flex items-center gap-1"><Icon size={14}><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></Icon> 學生姓名</label>
-                        <input type="text" value={playerName} onChange={(e) => setPlayerName(e.target.value)} placeholder="請輸入名字..." className="w-full p-3 rounded-xl border-2 border-sky-200 text-sky-800 focus:outline-none focus:border-sky-500 transition-colors text-center font-bold placeholder:font-normal placeholder:text-gray-400" />
+                      
+                      <div className="bg-yellow-100/50 p-2 rounded-lg text-xs text-yellow-800 mb-4 font-bold border border-yellow-200">
+                        💡 玩法提示：消除生詞，並點擊掉落的禮物來得分！
                       </div>
-                      <button type="button" onClick={() => setGameState('levelSelect')} className="w-full bg-sky-500 hover:bg-sky-600 text-white text-xl py-4 rounded-xl font-bold shadow-lg mb-3 flex items-center justify-center gap-2 transition-transform active:scale-95"><Play fill="currentColor" /> 開始闖關</button>
-                      <button type="button" onClick={() => setGameState('customEditor')} className="w-full bg-indigo-500 hover:bg-indigo-600 text-white text-lg py-3 rounded-xl font-bold shadow-lg mb-3 flex items-center justify-center gap-2 transition-transform active:scale-95"><Edit3 size={20} /> 自訂題庫</button>
-                      <button type="button" onClick={() => startGame('preset', 'all', 'menu')} className="w-full bg-amber-500 hover:bg-amber-600 text-white text-lg py-3 rounded-xl font-bold shadow-lg flex items-center justify-center gap-2 transition-transform active:scale-95"><Grid size={20} /> 綜合複習</button>
-                      <div className="mt-6 text-xs text-sky-300 font-medium">Design by Sophia Wong</div>
+                      
+                      <div className="mb-4 w-full px-4">
+                        <label className="block text-sky-300 text-sm font-bold mb-1 text-left flex items-center gap-1">
+                            <Icon size={14}><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></Icon>
+                            學生姓名
+                        </label>
+                        <input
+                            type="text"
+                            value={playerName}
+                            onChange={(e) => setPlayerName(e.target.value)}
+                            placeholder="請輸入名字..."
+                            className="w-full p-3 rounded-xl border-2 border-sky-200 text-sky-800 focus:outline-none focus:border-sky-500 transition-colors text-center font-bold placeholder:font-normal placeholder:text-gray-400"
+                        />
+                      </div>
+
+                      <button type="button" onClick={() => setGameState('levelSelect')} className="w-full bg-sky-500 hover:bg-sky-600 text-white text-xl py-4 rounded-xl font-bold shadow-lg mb-3 flex items-center justify-center gap-2 transition-transform active:scale-95">
+                          <Play fill="currentColor" /> 開始闖關
+                      </button>
+                      
+                      <button type="button" onClick={() => setGameState('leaderboardView')} className="w-full bg-yellow-500 hover:bg-yellow-600 text-white text-lg py-3 rounded-xl font-bold shadow-lg mb-3 flex items-center justify-center gap-2 transition-transform active:scale-95">
+                          <Trophy2 size={20} /> 查看榜單
+                      </button>
+
+                      <div className="mt-6 text-xs text-sky-300 font-medium">
+                        Design by Sophia Wong
+                      </div>
                    </div>
                 </div>
               )}
               
+              {/* Single Lesson Intro Screen (from URL share) */}
               {gameState === 'singleLessonIntro' && (
                 <div className="absolute inset-0 flex flex-col items-center justify-center z-50 bg-sky-950/80 backdrop-blur-sm p-4">
                    <div className="bg-white text-sky-900 p-8 rounded-3xl shadow-2xl max-w-sm w-full text-center border-4 border-sky-200">
-                      <div className="w-20 h-20 bg-sky-500 rounded-full flex items-center justify-center mx-auto mb-6 text-white shadow-lg"><Target size={40} /></div>
-                      <h1 className="text-2xl font-bold mb-2 text-sky-800">專屬挑戰</h1>
-                      <p className="text-sky-600 mb-6 font-medium text-lg">{DEFAULT_LESSON_DATA[selectedLessonId]?.title || "自訂課程"}</p>
-                      <div className="bg-yellow-100/50 p-2 rounded-lg text-xs text-yellow-800 mb-4 font-bold border border-yellow-200">💡 玩法提示：消除生詞，並點擊掉落的禮物來得分！</div>
-                      <div className="mb-4 w-full px-4">
-                        <label className="block text-sky-600 text-sm font-bold mb-1 text-left flex items-center gap-1"><Icon size={14}><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></Icon> 學生姓名</label>
-                        <input type="text" value={playerName} onChange={(e) => setPlayerName(e.target.value)} placeholder="請輸入名字..." className="w-full p-3 rounded-xl border-2 border-sky-200 text-sky-800 focus:outline-none focus:border-sky-500 transition-colors text-center font-bold placeholder:font-normal placeholder:text-gray-400" />
+                      <div className="w-20 h-20 bg-sky-500 rounded-full flex items-center justify-center mx-auto mb-6 text-white shadow-lg">
+                          <Target size={40} />
                       </div>
-                      <button type="button" onClick={() => startGame('preset', selectedLessonId, 'menu')} className="w-full bg-sky-500 hover:bg-sky-600 text-white text-xl py-4 rounded-xl font-bold shadow-lg mb-3 flex items-center justify-center gap-2 transition-transform active:scale-95"><Play fill="currentColor" /> 開始練習</button>
-                      <button type="button" onClick={() => setGameState('menu')} className="w-full bg-white hover:bg-gray-100 text-sky-600 border-2 border-sky-200 text-lg py-3 rounded-xl font-bold flex items-center justify-center gap-2"><Home size={20} /> 回主選單</button>
+                      <h1 className="text-2xl font-bold mb-2 text-sky-800">專屬挑戰</h1>
+                      <p className="text-sky-600 mb-6 font-medium text-lg">
+                        {DEFAULT_LESSON_DATA[selectedLessonId]?.title || "自訂課程"}
+                      </p>
+                      
+                      <div className="bg-yellow-100/50 p-2 rounded-lg text-xs text-yellow-800 mb-4 font-bold border border-yellow-200">
+                        💡 玩法提示：消除生詞，並點擊掉落的禮物來得分！
+                      </div>
+
+                      <div className="mb-4 w-full px-4">
+                        <label className="block text-sky-600 text-sm font-bold mb-1 text-left flex items-center gap-1">
+                            <Icon size={14}><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></Icon>
+                            學生姓名
+                        </label>
+                        <input
+                            type="text"
+                            value={playerName}
+                            onChange={(e) => setPlayerName(e.target.value)}
+                            placeholder="請輸入名字..."
+                            className="w-full p-3 rounded-xl border-2 border-sky-200 text-sky-800 focus:outline-none focus:border-sky-500 transition-colors text-center font-bold placeholder:font-normal placeholder:text-gray-400"
+                        />
+                      </div>
+                      
+                      <button 
+                        type="button" 
+                        onClick={() => startGame('preset', selectedLessonId, 'menu')} 
+                        className="w-full bg-sky-500 hover:bg-sky-600 text-white text-xl py-4 rounded-xl font-bold shadow-lg mb-3 flex items-center justify-center gap-2 transition-transform active:scale-95"
+                      >
+                          <Play fill="currentColor" /> 開始練習
+                      </button>
+
+                      <button 
+                        type="button" 
+                        onClick={() => setGameState('menu')} 
+                        className="w-full bg-white hover:bg-gray-100 text-sky-600 border-2 border-sky-200 text-lg py-3 rounded-xl font-bold flex items-center justify-center gap-2"
+                      >
+                          <Home size={20} /> 回主選單
+                      </button>
                    </div>
                 </div>
               )}
 
+              {/* Custom Editor Screen */}
               {gameState === 'customEditor' && (
                 <div className="absolute inset-0 flex flex-col z-50 bg-sky-900 overflow-y-auto">
                   <div className="p-4 max-w-lg mx-auto w-full h-full flex flex-col">
-                    <button onClick={() => setGameState('menu')} className="flex items-center gap-1 text-sky-300 mb-4 hover:text-white shrink-0"><ArrowLeft size={20} /> 返回主選單</button>
+                    <button onClick={() => setGameState('levelSelect')} className="flex items-center gap-1 text-sky-300 mb-4 hover:text-white shrink-0">
+                      <ArrowLeft size={20} /> 返回課程選擇
+                    </button>
                     <h2 className="text-2xl font-bold text-white mb-2 text-center">自訂生詞表</h2>
-                    <div className="bg-sky-800/50 p-3 rounded-lg text-sm text-sky-200 mb-4 flex gap-2"><Info size={24} className="shrink-0 text-sky-400" /><p>請依序輸入：<br/><b>生詞, 拼音, 注音</b> (用逗號分隔，一行一個)<br/>例如：早安, zǎo ān, ㄗㄠˇ ㄢ</p></div>
-                    <textarea className="flex-1 w-full bg-slate-800 text-white p-4 rounded-xl border-2 border-slate-600 focus:border-indigo-400 focus:outline-none font-mono text-lg leading-relaxed mb-4 resize-none shadow-inner" value={customInputText} onChange={(e) => setCustomInputText(e.target.value)} placeholder="早安, zǎo ān, ㄗㄠˇ ㄢ" />
-                    <button type="button" onClick={() => { const parsed = parseCustomInput(customInputText); if (parsed.length > 0) { setCustomData(parsed); startGame('custom', parsed, 'customEditor'); } else { alert("格式似乎不正確，請檢查您的輸入。"); } }} className="w-full bg-green-500 hover:bg-green-600 text-white text-xl py-4 rounded-xl font-bold shadow-lg flex items-center justify-center gap-2 transition-transform active:scale-95 shrink-0"><Play fill="currentColor" /> 使用此內容開始遊戲</button>
+                    <div className="bg-sky-800/50 p-3 rounded-lg text-sm text-sky-200 mb-4 flex gap-2">
+                      <Info size={24} className="shrink-0 text-sky-400" />
+                      <p>請依序輸入：<br/><b>生詞, 拼音, 注音</b> (用逗號分隔，一行一個)<br/>例如：早安, zǎo ān, ㄗㄠˇ ㄢ</p>
+                    </div>
+                    
+                    <textarea 
+                      className="flex-1 w-full bg-slate-800 text-white p-4 rounded-xl border-2 border-slate-600 focus:border-indigo-400 focus:outline-none font-mono text-lg leading-relaxed mb-4 resize-none shadow-inner"
+                      value={customInputText}
+                      onChange={(e) => setCustomInputText(e.target.value)}
+                      placeholder="早安, zǎo ān, ㄗㄠˇ ㄢ"
+                    />
+
+                    <button 
+                      type="button"
+                      onClick={() => {
+                        const parsed = parseCustomInput(customInputText);
+                        if (parsed.length > 0) {
+                          setCustomData(parsed);
+                          startGame('custom', parsed, 'customEditor');
+                        } else {
+                          alert("格式似乎不正確，請檢查您的輸入。");
+                        }
+                      }}
+                      className="w-full bg-green-500 hover:bg-green-600 text-white text-xl py-4 rounded-xl font-bold shadow-lg flex items-center justify-center gap-2 transition-transform active:scale-95 shrink-0"
+                    >
+                      <Play fill="currentColor" /> 使用此內容開始遊戲
+                    </button>
                   </div>
                 </div>
               )}
 
+              {/* Level Select Screen */}
               {gameState === 'levelSelect' && (
                 <div className="absolute inset-0 flex flex-col z-50 bg-sky-900 overflow-y-auto">
                   <div className="p-4 max-w-lg mx-auto w-full">
-                    <button onClick={() => setGameState('menu')} className="flex items-center gap-1 text-sky-300 mb-4 hover:text-white"><ArrowLeft size={20} /> 返回主選單</button>
+                    <button onClick={() => setGameState('menu')} className="flex items-center gap-1 text-sky-300 mb-4 hover:text-white">
+                      <ArrowLeft size={20} /> 返回主選單
+                    </button>
                     <h2 className="text-2xl font-bold text-white mb-6 text-center">選擇課程</h2>
+                    
+                    <button 
+                        type="button" 
+                        onClick={() => setGameState('customEditor')} 
+                        className="w-full bg-indigo-500 hover:bg-indigo-600 text-white text-lg py-4 rounded-xl font-bold shadow-lg mb-3 flex items-center justify-center gap-2 transition-transform active:scale-95"
+                    >
+                        <Edit3 size={24} /> 自訂題庫 (輸入生詞)
+                    </button>
+                    
+                    <button 
+                        type="button" 
+                        onClick={() => startGame('preset', 'all', 'levelSelect')} 
+                        className="w-full bg-amber-500 hover:bg-amber-600 text-white text-lg py-4 rounded-xl font-bold shadow-lg mb-6 flex items-center justify-center gap-2 transition-transform active:scale-95"
+                    >
+                        <Grid size={24} /> 綜合複習 (全部課程)
+                    </button>
+
                     <div className="grid grid-cols-2 gap-4 pb-8">
                       {Object.entries(DEFAULT_LESSON_DATA).map(([id, data]) => (
                         <div key={id} className="relative group">
-                            <button type="button" onClick={() => startGame('preset', id, 'levelSelect')} className="w-full bg-white/10 hover:bg-white/20 border border-sky-500/30 p-4 rounded-xl text-left transition-all active:scale-95 flex flex-col gap-2 pr-12"><span className="text-xs text-sky-400 uppercase tracking-wider">Lesson {id}</span><span className="text-lg font-bold text-white truncate">{data.title.split('：')[1]}</span></button>
-                            <button onClick={(e) => { e.stopPropagation(); handleCopyLink(id); }} className="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-sky-400 hover:text-white hover:bg-white/10 rounded-full transition-colors" title="複製課程連結"><Share2 size={20} /></button>
+                            <button 
+                              type="button"
+                              onClick={() => startGame('preset', id, 'levelSelect')}
+                              className="w-full bg-white/10 hover:bg-white/20 border border-sky-500/30 p-4 rounded-xl text-left transition-all active:scale-95 flex flex-col gap-2 pr-12"
+                            >
+                              <span className="text-xs text-sky-400 uppercase tracking-wider">Lesson {id}</span>
+                              <span className="text-lg font-bold text-white truncate">{data.title.split('：')[1]}</span>
+                            </button>
+                            <button 
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleCopyLink(id);
+                                }}
+                                className="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-sky-400 hover:text-white hover:bg-white/10 rounded-full transition-colors"
+                                title="複製課程連結"
+                            >
+                                <Share2 size={20} />
+                            </button>
                         </div>
                       ))}
                     </div>
@@ -762,27 +1439,75 @@
                 </div>
               )}
 
-              {gameState === 'countdown' && (<div className="absolute inset-0 flex items-center justify-center z-50 bg-sky-900/80 backdrop-blur-sm"><div className="text-9xl font-bold text-white animate-bounce">{countdown}</div></div>)}
+              {/* Countdown Overlay */}
+              {gameState === 'countdown' && (
+                <div className="absolute inset-0 flex items-center justify-center z-50 bg-sky-900/80 backdrop-blur-sm">
+                  <div className="text-9xl font-bold text-white animate-bounce">
+                    {countdown}
+                  </div>
+                </div>
+              )}
 
+              {/* Playing / Paused HUD & Game Area */}
               {(gameState === 'playing' || gameState === 'paused') && (
                 <>
                   <div className="absolute top-0 left-0 right-0 p-4 flex justify-between items-start z-10 max-w-xl mx-auto w-full">
                     <div className="flex items-start gap-2">
-                      <button onClick={togglePause} className="mt-0.5 p-1.5 bg-black/20 hover:bg-black/40 rounded-lg text-white/90 hover:text-white transition-colors backdrop-blur-sm" title="暫停">{gameState === 'paused' ? <Play size={20} fill="currentColor"/> : <Pause size={20} fill="currentColor" />}</button>
+                      <button 
+                        onClick={togglePause}
+                        className="mt-0.5 p-1.5 bg-black/20 hover:bg-black/40 rounded-lg text-white/90 hover:text-white transition-colors backdrop-blur-sm"
+                        title="暫停"
+                      >
+                        {gameState === 'paused' ? <Play size={20} fill="currentColor"/> : <Pause size={20} fill="currentColor" />}
+                      </button>
                       <div className="flex flex-col">
-                        <h1 className="text-xl font-bold text-sky-200 flex items-center gap-2 truncate max-w-[180px]">{stateRef.current.title}</h1>
-                        <div className="flex items-center gap-2 mt-1"><span className="text-xs bg-yellow-500/80 px-2 py-0.5 rounded text-white font-bold">關卡 {currentStageDisplay + 1}/{stateRef.current.stageGoals.length}</span><div className="flex items-center text-xs text-sky-300"><CheckCircle size={12} className="mr-1" />{masteredCountDisplay} / {stateRef.current.currentLessonWords.length}</div></div>
-                        <div className="w-32 h-1.5 bg-sky-900/50 rounded-full mt-1 border border-sky-600/50 overflow-hidden"><div className="h-full bg-green-400 transition-all duration-500" style={{ width: `${Math.min(100, (masteredCountDisplay / stageGoalDisplay) * 100)}%` }}></div></div>
+                        <h1 className="text-xl font-bold text-sky-200 flex items-center gap-2 truncate max-w-[180px]">
+                          {stateRef.current.title}
+                        </h1>
+                        
+                        <div className="flex items-center gap-2 mt-1">
+                          <span className="text-xs bg-yellow-500/80 px-2 py-0.5 rounded text-white font-bold">
+                            關卡 {currentStageDisplay + 1}/{stateRef.current.stageGoals.length}
+                          </span>
+                          <div className="flex items-center text-xs text-sky-300">
+                            <CheckCircle size={12} className="mr-1" />
+                            {masteredCountDisplay} / {stateRef.current.currentLessonWords.length}
+                          </div>
+                        </div>
+
+                        <div className="w-32 h-1.5 bg-sky-900/50 rounded-full mt-1 border border-sky-600/50 overflow-hidden">
+                          <div 
+                            className="h-full bg-green-400 transition-all duration-500"
+                            style={{ width: `${Math.min(100, (masteredCountDisplay / stageGoalDisplay) * 100)}%` }}
+                          ></div>
+                        </div>
                       </div>
                     </div>
+
                     <div className="flex flex-col items-end gap-2">
-                        <div className="text-right"><p className="text-xs text-sky-400">SCORE</p><p className="text-2xl font-mono font-bold text-white">{score}</p></div>
-                        {combo > 1 && (<div className="text-yellow-400 font-bold text-xl animate-pulse">{combo} COMBO!</div>)}
-                        <div className="flex gap-0.5">{[...Array(5)].map((_, i) => (<Heart key={i} size={18} className={`${i < lives ? 'fill-red-500 text-red-500' : 'text-sky-800'} transition-all`} />))}</div>
+                        <div className="text-right">
+                            <p className="text-xs text-sky-400">SCORE</p>
+                            <p className="text-2xl font-mono font-bold text-white">{score}</p>
+                        </div>
+                        {combo > 1 && (
+                          <div className="text-yellow-400 font-bold text-xl animate-pulse">
+                            {combo} COMBO!
+                          </div>
+                        )}
+                        <div className="flex gap-0.5">
+                            {[...Array(5)].map((_, i) => (
+                            <Heart 
+                                key={i} 
+                                size={18} 
+                                className={`${i < lives ? 'fill-red-500 text-red-500' : 'text-sky-800'} transition-all`} 
+                            />
+                            ))}
+                        </div>
                     </div>
                   </div>
-
-                  {onlinePlayers.length > 0 && (
+                  
+                   {/* Online Players Floating Widget (Bottom Right) */}
+                    {onlinePlayers.length > 0 && (
                         <div className="absolute bottom-4 right-4 z-[100] flex flex-col items-end">
                             {isOnlineListOpen && (
                                 <div className="mb-2 w-64 bg-black/80 backdrop-blur-md rounded-xl border border-white/20 p-3 max-h-60 overflow-y-auto custom-scrollbar animate-fade-in-up">
@@ -821,70 +1546,276 @@
                                 {!window.fb?.isOfflineMode && (isOnlineListOpen ? <ChevronDown size={16} /> : <ChevronUp size={16} />)}
                             </button>
                         </div>
-                  )}
+                    )}
+
 
                   <div className="relative w-full flex-1 max-w-xl mx-auto overflow-hidden z-0">
-                    <div className={`absolute bottom-[28%] w-full border-t-2 border-dashed ${bottomWarn ? 'border-red-500 bg-red-500/20' : 'border-red-500/50'} pointer-events-none transition-colors duration-100 z-20`}><span className="absolute right-0 -top-6 text-xs text-red-400 font-bold px-2">警戒線</span></div>
-                    {fallingWords.map((word) => { const isTarget = word.id === targetWordId; return (<div key={word.id} className="absolute transform -translate-x-1/2 transition-none will-change-transform z-30" style={{ left: `${word.x}%`, top: `${word.y}%` }}><div className={`relative flex flex-col items-center justify-center bg-white text-sky-900 rounded-xl shadow-lg border-4 ${isTarget ? 'border-yellow-400 scale-110 shadow-[0_0_20px_rgba(250,204,21,0.6)]' : 'border-sky-200 opacity-100'} px-4 py-3 min-w-[100px]`}>{isTarget && (<div className="absolute -top-8 text-yellow-300 animate-bounce"><Target size={24} /></div>)}<span className="text-3xl md:text-4xl font-bold font-serif text-slate-900 whitespace-nowrap">{word.chinese}</span></div></div>); })}
-                    {fallingGifts.map((gift) => (<div key={gift.id} className={`absolute transform -translate-x-1/2 z-30 cursor-pointer transition-transform ${gift.type === 'gold' ? 'scale-125' : 'scale-100'}`} style={{ left: `${gift.x}%`, top: `${gift.y}%` }} onPointerDown={(e) => handleGiftClick(gift.id, e)}><div className={`relative ${gift.type === 'gold' ? 'animate-spin-slow' : 'animate-bounce'}`}><Gift size={48} className={`${gift.type === 'gold' ? 'text-yellow-400 drop-shadow-[0_0_10px_rgba(250,204,21,0.8)]' : 'text-red-500 drop-shadow-md'}`} fill="currentColor"/>{gift.hitsRequired - gift.currentHits > 0 && gift.type === 'gold' && (<div className="absolute -top-2 -right-2 bg-white text-black text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center border border-gray-300">{gift.hitsRequired - gift.currentHits}</div>)}</div></div>))}
-                    {hitEffect && (<div className="absolute transform -translate-x-1/2 -translate-y-1/2 pointer-events-none z-[70]" style={{ left: `${hitEffect.x}%`, top: `${hitEffect.y}%` }}><div className="relative flex items-center justify-center"><div className={`absolute inset-0 w-24 h-24 rounded-full animate-ping opacity-80 ${hitEffect.isGift ? 'bg-yellow-200' : 'bg-yellow-300'}`}></div><div className="absolute inset-0 w-24 h-24 bg-white rounded-full animate-ping delay-75 opacity-50"></div><span className={`relative text-3xl font-black drop-shadow-md animate-bounce ${hitEffect.isGift ? 'text-red-500 text-4xl' : 'text-yellow-600'}`}>{hitEffect.value}</span></div></div>)}
+                    <div className={`absolute bottom-[28%] w-full border-t-2 border-dashed ${bottomWarn ? 'border-red-500 bg-red-500/20' : 'border-red-500/50'} pointer-events-none transition-colors duration-100 z-20`}>
+                        <span className="absolute right-0 -top-6 text-xs text-red-400 font-bold px-2">警戒線</span>
+                    </div>
+
+                    {fallingWords.map((word) => {
+                        const isTarget = word.id === targetWordId;
+                        return (
+                            <div
+                                key={word.id} 
+                                className="absolute transform -translate-x-1/2 transition-none will-change-transform z-30" 
+                                style={{ left: `${word.x}%`, top: `${word.y}%` }}
+                            >
+                                <div className={`
+                                    relative flex flex-col items-center justify-center
+                                    bg-white text-sky-900 rounded-xl shadow-lg border-4 
+                                    ${isTarget ? 'border-yellow-400 scale-110 shadow-[0_0_20px_rgba(250,204,21,0.6)]' : 'border-sky-200 opacity-100'}
+                                    px-4 py-3 min-w-[100px]
+                                `}>
+                                    {isTarget && (
+                                        <div className="absolute -top-8 text-yellow-300 animate-bounce">
+                                            <Target size={24} />
+                                        </div>
+                                    )}
+                                    <span className="text-3xl md:text-4xl font-bold font-serif text-slate-900 whitespace-nowrap">{word.chinese}</span>
+                                </div>
+                            </div>
+                        );
+                    })}
+
+                    {/* Gifts Rendering */}
+                    {fallingGifts.map((gift) => (
+                        <div
+                            key={gift.id}
+                            className={`absolute transform -translate-x-1/2 z-30 cursor-pointer transition-transform ${gift.type === 'gold' ? 'scale-125' : 'scale-100'}`}
+                            style={{ left: `${gift.x}%`, top: `${gift.y}%` }}
+                            onPointerDown={(e) => handleGiftClick(gift.id, e)}
+                        >
+                           <div className={`relative ${gift.type === 'gold' ? 'animate-spin-slow' : 'animate-bounce'}`}>
+                               <Gift 
+                                 size={48} 
+                                 className={`${gift.type === 'gold' ? 'text-yellow-400 drop-shadow-[0_0_10px_rgba(250,204,21,0.8)]' : 'text-red-500 drop-shadow-md'}`} 
+                                 fill="currentColor"
+                               />
+                               {gift.hitsRequired - gift.currentHits > 0 && gift.type === 'gold' && (
+                                   <div className="absolute -top-2 -right-2 bg-white text-black text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center border border-gray-300">
+                                       {gift.hitsRequired - gift.currentHits}
+                                   </div>
+                               )}
+                           </div>
+                        </div>
+                    ))}
+
+                    {hitEffect && (
+                        <div 
+                        className="absolute transform -translate-x-1/2 -translate-y-1/2 pointer-events-none z-[70]"
+                        style={{ left: `${hitEffect.x}%`, top: `${hitEffect.y}%` }}
+                        >
+                            <div className="relative flex items-center justify-center">
+                                <div className={`absolute inset-0 w-24 h-24 rounded-full animate-ping opacity-80 ${hitEffect.isGift ? 'bg-yellow-200' : 'bg-yellow-300'}`}></div>
+                                <div className="absolute inset-0 w-24 h-24 bg-white rounded-full animate-ping delay-75 opacity-50"></div>
+                                <span className={`relative text-3xl font-black drop-shadow-md animate-bounce ${hitEffect.isGift ? 'text-red-500 text-4xl' : 'text-yellow-600'}`}>{hitEffect.value}</span>
+                            </div>
+                        </div>
+                    )}
                   </div>
-                  <div className="absolute bottom-0 left-0 right-0 bg-sky-950/95 backdrop-blur-md border-t border-sky-800 p-4 z-40 h-[25%] min-h-[160px]"><div className="max-w-xl mx-auto h-full flex flex-col justify-center"><div className="flex justify-between items-center mb-2 px-1 shrink-0"><span className="text-xs text-sky-400">請選擇正確讀音 (1, 2, 3)</span>{targetWordId && <span className="text-xs text-yellow-400 font-bold animate-pulse">鎖定中...</span>}</div><div className="grid grid-cols-3 gap-3 h-full pb-2">{options.map((opt, idx) => (<button key={idx} onClick={() => handleOptionClick(opt)} className="bg-white/10 hover:bg-white/20 active:bg-sky-600 border border-sky-600/50 rounded-xl p-1 flex flex-col items-center justify-center transition-all h-full group relative overflow-hidden"><span className="absolute top-1 left-2 text-sky-600/30 font-bold text-3xl -z-0 group-hover:scale-110 transition-transform">{idx + 1}</span><span className="text-xl font-bold text-white z-10 mb-0.5">{opt.pinyin}</span><span className="text-sm text-sky-200 z-10 font-mono text-center leading-tight">{opt.zhuin}</span></button>))} {options.length === 0 && (<div className="col-span-3 text-center flex items-center justify-center text-sky-500 italic h-full">等待目標出現...</div>)}</div></div></div></>
+
+                  <div className="absolute bottom-0 left-0 right-0 bg-sky-950/95 backdrop-blur-md border-t border-sky-800 p-4 z-40 h-[25%] min-h-[160px]">
+                      <div className="max-w-xl mx-auto h-full flex flex-col justify-center">
+                          <div className="flex justify-between items-center mb-2 px-1 shrink-0">
+                              <span className="text-xs text-sky-400">請選擇正確讀音 (1, 2, 3)</span>
+                              {targetWordId && <span className="text-xs text-yellow-400 font-bold animate-pulse">鎖定中...</span>}
+                          </div>
+                          
+                          <div className="grid grid-cols-3 gap-3 h-full pb-2">
+                              {options.map((opt, idx) => (
+                                  <button
+                                      key={idx}
+                                      onClick={() => handleOptionClick(opt)}
+                                      className="bg-white/10 hover:bg-white/20 active:bg-sky-600 border border-sky-600/50 rounded-xl p-1 flex flex-col items-center justify-center transition-all h-full group relative overflow-hidden"
+                                  >
+                                      <span className="absolute top-1 left-2 text-sky-600/30 font-bold text-3xl -z-0 group-hover:scale-110 transition-transform">{idx + 1}</span>
+                                      <span className="text-xl font-bold text-white z-10 mb-0.5">{opt.pinyin}</span>
+                                      <span className="text-sm text-sky-200 z-10 font-mono text-center leading-tight">{opt.zhuin}</span>
+                                  </button>
+                              ))}
+                              {options.length === 0 && (
+                                  <div className="col-span-3 text-center flex items-center justify-center text-sky-500 italic h-full">
+                                      等待目標出現...
+                                  </div>
+                              )}
+                          </div>
+                      </div>
+                  </div>
+                </>
               )}
 
+              {/* Stage Clear Screen */}
               {gameState === 'stageClear' && (
                 <div className="absolute inset-0 flex items-center justify-center z-50 bg-sky-950/90 backdrop-blur-sm p-4">
                    <div className="bg-white text-sky-900 p-8 rounded-3xl shadow-2xl max-w-sm w-full text-center border-4 border-green-400 animate-fade-in-up">
-                      <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6"><FastForward size={48} className="text-green-500" /></div>
+                      <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <FastForward size={48} className="text-green-500" />
+                      </div>
                       <h2 className="text-3xl font-bold mb-2 text-sky-800">關卡 {currentStageDisplay + 1} 完成！</h2>
-                      <p className="text-sky-600 mb-6">已精熟 {masteredCountDisplay} 個單字。<br/>{/* Motivational Messages */}{(currentStageDisplay + 1) % 3 === 0 ? (<span className="text-amber-600 font-bold mt-2 block text-lg animate-pulse">{currentStageDisplay + 1 === 3 && "太棒了！已經通過三關了！"}{currentStageDisplay + 1 === 6 && "不可思議！你的專注力真強！"}{currentStageDisplay + 1 === 9 && "堅持住！勝利就在眼前！"}{currentStageDisplay + 1 > 9 && "你是華語特訓大師！"}</span>) : (<span className="text-slate-400 font-bold mt-2 block">{(currentStageDisplay + 1) % 3 === 2 ? "下一關速度將會稍微提升！" : "保持節奏，繼續前進！"}</span>)}</p>
-                      <button type="button" onClick={nextStage} className="w-full bg-green-500 hover:bg-green-600 text-white text-lg py-3 rounded-xl font-bold shadow-md flex items-center justify-center gap-2"><Play size={24} fill="currentColor" /> 繼續挑戰</button>
+                      <p className="text-sky-600 mb-6">
+                         已精熟 {masteredCountDisplay} 個單字。<br/>
+                         
+                         {/* Motivational Messages based on stage */}
+                         {(currentStageDisplay + 1) % 3 === 0 ? (
+                            <span className="text-amber-600 font-bold mt-2 block text-lg animate-pulse">
+                                {currentStageDisplay + 1 === 3 && "太棒了！已經通過三關了！"}
+                                {currentStageDisplay + 1 === 6 && "不可思議！你的專注力真強！"}
+                                {currentStageDisplay + 1 === 9 && "堅持住！勝利就在眼前！"}
+                                {currentStageDisplay + 1 > 9 && "你是華語特訓大師！"}
+                            </span>
+                         ) : (
+                            <span className="text-slate-400 font-bold mt-2 block">
+                                {(currentStageDisplay + 1) % 3 === 2 
+                                    ? "下一關速度將會稍微提升！" 
+                                    : "保持節奏，繼續前進！"}
+                            </span>
+                         )}
+                      </p>
+                      
+                      <button type="button" onClick={nextStage} className="w-full bg-green-500 hover:bg-green-600 text-white text-lg py-3 rounded-xl font-bold shadow-md flex items-center justify-center gap-2">
+                          <Play size={24} fill="currentColor" /> 繼續挑戰
+                      </button>
                    </div>
                 </div>
               )}
 
+              {/* Victory / Gameover Screen */}
               {(gameState === 'gameover' || gameState === 'victory') && (
                 <div className="absolute inset-0 flex items-center justify-center z-50 bg-sky-950/90 backdrop-blur-sm p-4 overflow-y-auto">
                      <div className="bg-white text-sky-900 p-8 rounded-3xl shadow-2xl max-w-sm w-full text-center border-4 border-sky-200 animate-fade-in-up my-auto">
                         {gameState === 'victory' && !isRewardOpened ? (
+                            // 禮物盒狀態
                            <>
-                              <div onClick={handleOpenReward} className="w-32 h-32 bg-red-100 rounded-2xl flex items-center justify-center mx-auto mb-6 cursor-pointer hover:scale-110 transition-transform animate-bounce shadow-lg border-4 border-red-200"><Gift size={64} className="text-red-500" /></div>
-                              <h2 className="text-2xl font-bold mb-2 text-sky-800 animate-pulse">{playerName ? `${playerName} ` : ""}恭喜通關！</h2>
+                              <div 
+                                onClick={handleOpenReward}
+                                className="w-32 h-32 bg-red-100 rounded-2xl flex items-center justify-center mx-auto mb-6 cursor-pointer hover:scale-110 transition-transform animate-bounce shadow-lg border-4 border-red-200"
+                              >
+                                <Gift size={64} className="text-red-500" />
+                              </div>
+                              <h2 className="text-2xl font-bold mb-2 text-sky-800 animate-pulse">
+                                {playerName ? `${playerName} ` : ""}恭喜通關！
+                              </h2>
+                              <p className="text-sky-600 mb-1 font-medium">
+                                {selectedLessonId && selectedLessonId !== 'all' && selectedLessonId !== 'custom' ? 
+                                    `Lesson ${selectedLessonId}: ${stateRef.current.title.split('：')[1] || stateRef.current.title}` : 
+                                    stateRef.current.title}
+                              </p>
                               <p className="text-sky-600 mb-6 text-lg font-bold">點擊禮物盒領取獎勵！</p>
                            </>
                         ) : (
+                           // 已拆開或是失敗狀態
                            <>
                                 {gameState === 'victory' ? (
                                    <>
-                                      <div className="w-20 h-20 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce"><Trophy size={40} className="text-yellow-500" /></div>
-                                      <h2 className="text-2xl font-bold mb-1 text-sky-800">{playerName ? `${playerName} ` : ""}{stateRef.current.wrongWordIds.size === 0 ? "完美通關！" : "挑戰成功！"}</h2>
-                                      <p className="text-lg text-sky-700 font-bold mb-2">{selectedLessonId && selectedLessonId !== 'all' && selectedLessonId !== 'custom' ? `Lesson ${selectedLessonId}: ${stateRef.current.title.split('：')[1] || stateRef.current.title}` : stateRef.current.title}</p>
+                                      <div className="w-20 h-20 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce">
+                                        <Trophy size={40} className="text-yellow-500" />
+                                      </div>
+                                      <h2 className="text-2xl font-bold mb-1 text-sky-800">
+                                        {playerName ? `${playerName} ` : ""}
+                                        {stateRef.current.wrongWordIds.size === 0 ? "完美通關！" : "挑戰成功！"}
+                                      </h2>
+                                      
+                                      <p className="text-lg text-sky-700 font-bold mb-2">
+                                        {selectedLessonId && selectedLessonId !== 'all' && selectedLessonId !== 'custom' ? 
+                                            `Lesson ${selectedLessonId}: ${stateRef.current.title.split('：')[1] || stateRef.current.title}` : 
+                                            stateRef.current.title}
+                                      </p>
+                                      
                                       <p className="text-sky-600 mb-4 text-sm">太棒了！學會了 {stateRef.current.currentLessonWords.length} 個生詞。</p>
                                    </>
                                 ) : (
                                    <>
-                                      <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4"><Heart size={40} className="text-gray-400" /></div>
+                                      <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                        <Heart size={40} className="text-gray-400" />
+                                      </div>
                                       <h2 className="text-2xl font-bold mb-1 text-sky-800">再接再厲</h2>
                                       <p className="text-sky-600 mb-4 text-sm">加油，多練習幾次！</p>
                                    </>
                                 )}
                                 
                                 {stateRef.current.wrongWordIds.size > 0 ? (
-                                  <div className="mb-4 bg-red-50 rounded-xl p-4 border border-red-100"><div className="flex items-center gap-2 mb-3 text-red-600 font-bold border-b border-red-200 pb-2"><AlertCircle size={18} /> 錯題回顧 ({stateRef.current.wrongWordIds.size})</div><div className="max-h-40 overflow-y-auto pr-1 space-y-2 text-left">{stateRef.current.currentLessonWords.filter(w => stateRef.current.wrongWordIds.has(w.id)).map(word => (<div key={word.id} onClick={() => speak(word.chinese)} className="flex items-center justify-between bg-white p-2 rounded-lg shadow-sm cursor-pointer hover:bg-red-50 transition-colors"><span className="font-bold text-lg text-slate-700">{word.chinese}</span><div className="text-right"><div className="text-xs text-slate-500 font-mono">{word.pinyin}</div><div className="text-xs text-slate-400 font-mono">{word.zhuin}</div></div><Volume2 size={14} className="text-slate-300 ml-2" /></div>))}</div><button type="button" onClick={retryMistakes} className="w-full mt-3 bg-red-500 hover:bg-red-600 text-white py-2 rounded-lg font-bold shadow-sm flex items-center justify-center gap-2 text-sm"><Zap size={16} fill="currentColor" /> 只練習錯題</button></div>
-                                ) : (gameState === 'victory' && (<div className="mb-6 bg-green-50 rounded-xl p-4 border border-green-100 text-green-700"><p className="font-bold flex items-center justify-center gap-2"><Star className="fill-green-500 text-green-500" /> 太神了！完美無瑕！</p></div>))}
+                                  <div className="mb-4 bg-red-50 rounded-xl p-4 border border-red-100">
+                                    <div className="flex items-center gap-2 mb-3 text-red-600 font-bold border-b border-red-200 pb-2">
+                                      <AlertCircle size={18} />
+                                      錯題回顧 ({stateRef.current.wrongWordIds.size})
+                                    </div>
+                                    <div className="max-h-40 overflow-y-auto pr-1 space-y-2 text-left">
+                                      {stateRef.current.currentLessonWords
+                                        .filter(w => stateRef.current.wrongWordIds.has(w.id))
+                                        .map(word => (
+                                          <div key={word.id} 
+                                               onClick={() => speak(word.chinese)}
+                                               className="flex items-center justify-between bg-white p-2 rounded-lg shadow-sm cursor-pointer hover:bg-red-50 transition-colors"
+                                          >
+                                            <span className="font-bold text-lg text-slate-700">{word.chinese}</span>
+                                            <div className="text-right">
+                                              <div className="text-xs text-slate-500 font-mono">{word.pinyin}</div>
+                                              <div className="text-xs text-slate-400 font-mono">{word.zhuin}</div>
+                                            </div>
+                                            <Volume2 size={14} className="text-slate-300 ml-2" />
+                                          </div>
+                                        ))
+                                      }
+                                    </div>
+                                    <button 
+                                      type="button"
+                                      onClick={retryMistakes}
+                                      className="w-full mt-3 bg-red-500 hover:bg-red-600 text-white py-2 rounded-lg font-bold shadow-sm flex items-center justify-center gap-2 text-sm"
+                                    >
+                                      <Zap size={16} fill="currentColor" /> 只練習錯題
+                                    </button>
+                                  </div>
+                                ) : (
+                                  gameState === 'victory' && (
+                                    <div className="mb-6 bg-green-50 rounded-xl p-4 border border-green-100 text-green-700">
+                                      <p className="font-bold flex items-center justify-center gap-2">
+                                        <Star className="fill-green-500 text-green-500" />
+                                        太神了！完美無瑕！
+                                      </p>
+                                    </div>
+                                  )
+                                )}
                                 
+                                {/* LEADERBOARD SECTION (Persistent) */}
                                 <div className="mt-4 mb-4 w-full bg-yellow-50 rounded-xl p-3 border border-yellow-200">
-                                    <div className="flex items-center gap-2 mb-2 text-yellow-700 font-bold border-b border-yellow-200 pb-1"><Trophy2 size={16} /> 歷史風雲榜 (All Time Ranking)</div>
+                                    <div className="flex items-center gap-2 mb-2 text-yellow-700 font-bold border-b border-yellow-200 pb-1">
+                                      <Trophy2 size={16} /> 歷史風雲榜 (All Time Ranking)
+                                    </div>
                                     <div className="max-h-32 overflow-y-auto space-y-1 pr-1 custom-scrollbar">
                                         {allPlayers.slice(0, 10).map((p, idx) => (
-                                            <div key={p.id} className={`flex justify-between text-xs p-1.5 rounded ${p.id === user?.uid ? 'bg-yellow-200 font-bold' : 'bg-white'}`}><div className="flex gap-2 items-center"><span className={`w-5 text-center font-bold ${idx < 3 ? 'text-yellow-600' : 'text-slate-400'}`}>{idx + 1}.</span><span className="text-slate-700 truncate max-w-[80px]">{p.name || "無名氏"}</span></div><div className="flex flex-col items-end"><span className="font-bold text-slate-600">{p.highScore || 0} 分</span><span className="text-[10px] text-slate-400 truncate max-w-[60px]">{p.lesson || ""}</span></div></div>
+                                            <div key={p.id} className={`flex justify-between text-xs p-1.5 rounded ${p.id === user?.uid ? 'bg-yellow-200 font-bold' : 'bg-white'}`}>
+                                                <div className="flex gap-2 items-center">
+                                                    <span className={`w-5 text-center font-bold ${idx < 3 ? 'text-yellow-600' : 'text-slate-400'}`}>
+                                                        {idx + 1}.
+                                                    </span>
+                                                    <span className="text-slate-700 truncate max-w-[80px]">{p.name || "無名大俠"}</span>
+                                                </div>
+                                                <div className="flex flex-col items-end">
+                                                    <span className="font-bold text-slate-600">{p.highScore || 0} 分</span>
+                                                    <span className="text-[10px] text-slate-400 truncate max-w-[60px]">{p.lesson || ""}</span>
+                                                </div>
+                                            </div>
                                         ))}
-                                        {allPlayers.length === 0 && <p className="text-center text-xs text-slate-400">{window.fb?.isOfflineMode ? "單機模式下僅記錄本機分數" : "尚無排行資料"}</p>}
+                                        {allPlayers.length === 0 && <p className="text-center text-xs text-slate-400">
+                                            {window.fb?.isOfflineMode ? "單機模式下僅記錄本機分數" : "尚無排行資料"}
+                                        </p>}
                                     </div>
                                 </div>
+
                                 <div className="flex flex-col gap-2">
-                                  <button type="button" onClick={() => startGame(selectedLessonId === 'custom' ? 'custom' : 'preset', selectedLessonId === 'custom' ? customData : selectedLessonId)} className="w-full bg-sky-500 hover:bg-sky-600 text-white text-lg py-3 rounded-xl font-bold shadow-md flex items-center justify-center gap-2"><RotateCcw size={18} /> 再次挑戰</button>
-                                  <button type="button" onClick={() => setGameState(prevGameState)} className="w-full bg-white hover:bg-sky-50 border-2 border-sky-200 text-sky-700 text-lg py-3 rounded-xl font-bold flex items-center justify-center gap-2">{prevGameState === 'menu' ? <Home size={18} /> : <ArrowLeft size={18} />} {prevGameState === 'menu' ? '回主選單' : '返回上一頁'}</button>
+                                  <button 
+                                    type="button"
+                                    onClick={() => startGame(selectedLessonId === 'custom' ? 'custom' : 'preset', selectedLessonId === 'custom' ? customData : selectedLessonId)} 
+                                    className="w-full bg-sky-500 hover:bg-sky-600 text-white text-lg py-3 rounded-xl font-bold shadow-md flex items-center justify-center gap-2"
+                                  >
+                                      <RotateCcw size={18} /> 再次挑戰
+                                  </button>
+                                  <button type="button" onClick={() => setGameState(prevGameState)} className="w-full bg-white hover:bg-sky-50 border-2 border-sky-200 text-sky-700 text-lg py-3 rounded-xl font-bold flex items-center justify-center gap-2">
+                                      {prevGameState === 'menu' ? <Home size={18} /> : <ArrowLeft size={18} />}
+                                      {prevGameState === 'menu' ? '回主選單' : '返回上一頁'}
+                                  </button>
                                 </div>
                            </>
                         )}
