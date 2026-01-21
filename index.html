@@ -29,7 +29,7 @@
         // ==========================================================================================
         
         const userProvidedConfig = {
-              apiKey: "AIzaSyCNOqh9IU3WfftExx4bxt50jAN2mcpbJFs",
+  apiKey: "AIzaSyCNOqh9IU3WfftExx4bxt50jAN2mcpbJFs",
   authDomain: "chinese-vocabulary-ae88a.firebaseapp.com",
   projectId: "chinese-vocabulary-ae88a",
   storageBucket: "chinese-vocabulary-ae88a.firebasestorage.app",
@@ -394,10 +394,18 @@
                       let statusText = "在大廳";
                       if (gameState === 'playing') {
                         statusText = `得分: ${stateRef.current.score}`;
+                      } else if (gameState === 'countdown') {
+                        statusText = "準備中";
+                      } else if (gameState === 'paused') {
+                        statusText = "暫停中";
                       } else if (gameState === 'victory') {
                         statusText = "已通關";
                       } else if (gameState === 'gameover') {
                         statusText = "挑戰失敗";
+                      } else if (gameState === 'levelSelect') {
+                         statusText = "選課中";
+                      } else if (gameState === 'customEditor') {
+                         statusText = "出題中";
                       }
                       
                       // Construct Lesson info
@@ -1395,23 +1403,7 @@
                     </button>
                     <h2 className="text-2xl font-bold text-white mb-6 text-center">選擇課程</h2>
                     
-                    <button 
-                        type="button" 
-                        onClick={() => setGameState('customEditor')} 
-                        className="w-full bg-indigo-500 hover:bg-indigo-600 text-white text-lg py-4 rounded-xl font-bold shadow-lg mb-3 flex items-center justify-center gap-2 transition-transform active:scale-95"
-                    >
-                        <Edit3 size={24} /> 自訂題庫 (輸入生詞)
-                    </button>
-                    
-                    <button 
-                        type="button" 
-                        onClick={() => startGame('preset', 'all', 'levelSelect')} 
-                        className="w-full bg-amber-500 hover:bg-amber-600 text-white text-lg py-4 rounded-xl font-bold shadow-lg mb-6 flex items-center justify-center gap-2 transition-transform active:scale-95"
-                    >
-                        <Grid size={24} /> 綜合複習 (全部課程)
-                    </button>
-
-                    <div className="grid grid-cols-2 gap-4 pb-8">
+                    <div className="grid grid-cols-2 gap-4 mb-6">
                       {Object.entries(DEFAULT_LESSON_DATA).map(([id, data]) => (
                         <div key={id} className="relative group">
                             <button 
@@ -1435,6 +1427,24 @@
                         </div>
                       ))}
                     </div>
+
+                    <button 
+                        type="button" 
+                        onClick={() => startGame('preset', 'all', 'levelSelect')} 
+                        className="w-full bg-amber-500 hover:bg-amber-600 text-white text-lg py-4 rounded-xl font-bold shadow-lg mb-3 flex items-center justify-center gap-2 transition-transform active:scale-95"
+                    >
+                        <Grid size={24} /> 綜合複習 (全部課程)
+                    </button>
+
+                    <button 
+                        type="button" 
+                        onClick={() => setGameState('customEditor')} 
+                        className="w-full bg-indigo-500 hover:bg-indigo-600 text-white text-lg py-4 rounded-xl font-bold shadow-lg mb-8 flex items-center justify-center gap-2 transition-transform active:scale-95"
+                    >
+                        <Edit3 size={24} /> 自訂題庫 (輸入生詞)
+                    </button>
+                    
+                    <div className="h-8"></div>
                   </div>
                 </div>
               )}
@@ -1508,7 +1518,7 @@
                   
                    {/* Online Players Floating Widget (Bottom Right) */}
                     {onlinePlayers.length > 0 && (
-                        <div className="absolute bottom-4 right-4 z-[100] flex flex-col items-end">
+                        <div className={`absolute right-4 z-[100] flex flex-col items-end transition-all duration-300 ${gameState === 'playing' ? 'bottom-60 md:bottom-4' : 'bottom-4'}`}>
                             {isOnlineListOpen && (
                                 <div className="mb-2 w-64 bg-black/80 backdrop-blur-md rounded-xl border border-white/20 p-3 max-h-60 overflow-y-auto custom-scrollbar animate-fade-in-up">
                                     <h3 className="text-white text-sm font-bold mb-2 flex items-center gap-2 border-b border-white/10 pb-1">
@@ -1524,6 +1534,9 @@
                                                     {p.status === '在大廳' && <span className="text-[10px] bg-gray-500/30 text-gray-300 px-1.5 py-0.5 rounded">大廳</span>}
                                                     {p.status === '已通關' && <span className="text-[10px] bg-yellow-500/30 text-yellow-300 px-1.5 py-0.5 rounded">通關</span>}
                                                     {p.status === '挑戰失敗' && <span className="text-[10px] bg-red-500/30 text-red-300 px-1.5 py-0.5 rounded">失敗</span>}
+                                                    {p.status === '選課中' && <span className="text-[10px] bg-blue-500/30 text-blue-300 px-1.5 py-0.5 rounded">選課中</span>}
+                                                    {p.status === '準備中' && <span className="text-[10px] bg-purple-500/30 text-purple-300 px-1.5 py-0.5 rounded">準備中</span>}
+                                                    {p.status === '出題中' && <span className="text-[10px] bg-indigo-500/30 text-indigo-300 px-1.5 py-0.5 rounded">出題中</span>}
                                                 </div>
                                                 <div className="flex justify-between text-gray-400">
                                                     <span className="truncate max-w-[100px]">{p.lesson}</span>
